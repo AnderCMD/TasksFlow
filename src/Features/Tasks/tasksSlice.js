@@ -43,7 +43,9 @@ const loadTasksFromStorage = () => {
 // Estado inicial
 const initialState = {
 	tasks: loadTasksFromStorage(),
-	filter: 'all', // 'all', 'active', 'completed'
+	filter: 'all',
+	search: '',
+	sortBy: 'createdAt:desc',
 	status: 'idle',
 	error: null,
 };
@@ -106,6 +108,14 @@ export const tasksSlice = createSlice({
 			state.filter = action.payload;
 		},
 
+		setSearch: (state, action) => {
+			state.search = action.payload;
+		},
+
+		setSortBy: (state, action) => {
+			state.sortBy = action.payload;
+		},
+
 		cleanTasks: (state) => {
 			state.tasks = state.tasks.filter(
 				(task) =>
@@ -120,38 +130,74 @@ export const tasksSlice = createSlice({
 });
 
 // Acciones
-export const { addTask, removeTask, toggleTaskStatus, updateTask, setFilter, cleanTasks } = tasksSlice.actions;
+export const { 
+    addTask, 
+    removeTask, 
+    toggleTaskStatus, 
+    updateTask, 
+    setFilter, 
+    setSearch,
+    setSortBy,
+    cleanTasks 
+} = tasksSlice.actions;
 
 // Selectores
 export const selectAllTasks = (state) => state.tasks?.tasks || [];
 
 // Selector optimizado para rendimiento
 export const selectFilteredTasks = createSelector(
-	[(state) => state.tasks?.tasks || [], (state) => state.tasks?.filter || 'all'],
-	(tasks, filter) => {
-		const validTasks = tasks.filter(
-			(task) => task !== null && task !== undefined && typeof task === 'object' && typeof task.id === 'string'
-		);
+	[
+		(state) => state.tasks?.tasks || [],
+		(state) => state.tasks?.filter || 'all',
+		(state) => state.tasks?.search || '',
+		(state) => state.tasks?.sortBy || 'createdAt:desc',
+	],
+	(tasks, filter, search, sortBy) => {
+		let filteredTasks = tasks.filter((task) => task !== null && task !== undefined && typeof task === 'object');
 
-		// Ordenar tareas por fecha de creación (asumiendo que tienes un campo createdAt)
-		const sortedTasks = [...validTasks].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-
+		// Aplicar filtro por estado/prioridad
 		switch (filter) {
-			case 'all':
-				return validTasks;
 			case 'active':
-				return validTasks.filter((task) => !task.completed);
+				filteredTasks = filteredTasks.filter((task) => !task.completed);
+				break;
 			case 'completed':
-				return validTasks.filter((task) => task.completed);
+				filteredTasks = filteredTasks.filter((task) => task.completed);
+				break;
 			case 'high':
-				return validTasks.filter((task) => task.priority === 'high');
 			case 'medium':
-				return validTasks.filter((task) => task.priority === 'medium');
 			case 'low':
-				return validTasks.filter((task) => task.priority === 'low');
-			default:
-				return validTasks;
+				filteredTasks = filteredTasks.filter((task) => task.priority === filter);
+				break;
 		}
+
+		// Aplicar búsqueda
+		if (search.trim()) {
+			const searchLower = search.toLowerCase().trim();
+			filteredTasks = filteredTasks.filter(
+				(task) =>
+					task.title.toLowerCase().includes(searchLower) ||
+					(task.description || '').toLowerCase().includes(searchLower)
+			);
+		}
+
+		// Aplicar ordenamiento
+		const [field, direction] = sortBy.split(':');
+		return [...filteredTasks].sort((a, b) => {
+			let comparison = 0;
+			switch (field) {
+				case 'createdAt':
+					comparison = new Date(b.createdAt) - new Date(a.createdAt);
+					break;
+				case 'dueDate':
+					comparison = new Date(a.dueDate || '9999') - new Date(b.dueDate || '9999');
+					break;
+				case 'priority':
+					const priorityOrder = { high: 3, medium: 2, low: 1 };
+					comparison = priorityOrder[b.priority] - priorityOrder[a.priority];
+					break;
+			}
+			return direction === 'asc' ? -comparison : comparison;
+		});
 	}
 );
 

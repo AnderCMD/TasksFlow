@@ -65,7 +65,7 @@ const TaskForm = () => {
 			<motion.form
 				onSubmit={handleSubmit}
 				layout
-				className='bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-md p-4 sm:p-5 transition-all duration-300'>
+				className='bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-md p-10 sm:p-5 transition-all duration-300'>
 				<div className='flex items-center mb-4 gap-3'>
 					<motion.span
 						initial={{ scale: 0 }}

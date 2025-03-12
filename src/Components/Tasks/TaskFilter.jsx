@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
-import { selectTaskCounts, selectActiveFilter, setFilter } from '@/Features/Tasks/tasksSlice';
+import { selectTaskCounts, selectActiveFilter, setFilter, setSearch, setSortBy } from '@/Features/Tasks/tasksSlice';
 
-const TaskFilter = ({ filters = {}, onFilterChange }) => {
+const TaskFilter = () => {
 	const dispatch = useDispatch();
 	const activeFilter = useSelector(selectActiveFilter);
 	const taskCounts = useSelector(selectTaskCounts);
@@ -23,24 +23,16 @@ const TaskFilter = ({ filters = {}, onFilterChange }) => {
 
 	const handleFilterChange = (filterId) => {
 		dispatch(setFilter(filterId));
-		if (onFilterChange) {
-			onFilterChange({ ...filters, status: filterId });
-		}
 	};
 
 	const handleSearchChange = (e) => {
 		const value = e.target.value;
 		setSearchTerm(value);
-		if (onFilterChange) {
-			onFilterChange({ ...filters, search: value });
-		}
+		dispatch(setSearch(value));
 	};
 
 	const handleSortChange = (e) => {
-		const value = e.target.value;
-		if (onFilterChange) {
-			onFilterChange({ ...filters, sortBy: value });
-		}
+		dispatch(setSortBy(e.target.value));
 	};
 
 	return (
