@@ -1,5 +1,14 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 
+// Función auxiliar para ajustar la fecha a la zona horaria de México
+const adjustToMexicoTimezone = (dateString) => {
+	if (!dateString) return null;
+	const date = new Date(dateString);
+	// Ajustamos la fecha a mediodía en la zona horaria de México (UTC-6)
+	date.setUTCHours(18, 0, 0, 0); // 18 UTC = 12 PM Mexico
+	return date.toISOString();
+};
+
 // Recuperar tareas del localStorage si existen
 const loadTasksFromStorage = () => {
 	try {
@@ -43,19 +52,28 @@ export const tasksSlice = createSlice({
 	name: 'tasks',
 	initialState,
 	reducers: {
-		// Agregar tarea
 		addTask: (state, action) => {
-			state.tasks.push(action.payload);
+			if (!action.payload?.title?.trim()) {
+				return;
+			}
+
+			state.tasks.push({
+				...action.payload,
+				title: action.payload.title.trim(),
+				description: action.payload.description?.trim() || '',
+				completed: action.payload.completed || false,
+				priority: action.payload.priority || 'medium',
+				dueDate: adjustToMexicoTimezone(action.payload.dueDate),
+				createdAt: new Date().toISOString(),
+			});
 			localStorage.setItem('tasks', JSON.stringify(state.tasks));
 		},
 
-		// Eliminar tarea
 		removeTask: (state, action) => {
 			state.tasks = state.tasks.filter((task) => task !== null && task.id !== action.payload);
 			localStorage.setItem('tasks', JSON.stringify(state.tasks));
 		},
 
-		// Cambiar estado de la tarea (completada/pendiente)
 		toggleTaskStatus: (state, action) => {
 			const task = state.tasks.find((task) => task !== null && task.id === action.payload);
 			if (task) {
@@ -64,22 +82,30 @@ export const tasksSlice = createSlice({
 			}
 		},
 
-		// Editar tarea
 		updateTask: (state, action) => {
 			const { id, ...changes } = action.payload;
-			const existingTask = state.tasks.find((task) => task !== null && task.id === id);
+			if (!id || !changes.title?.trim()) {
+				return;
+			}
+
+			const existingTask = state.tasks.find((task) => task?.id === id);
 			if (existingTask) {
-				Object.assign(existingTask, changes);
+				Object.assign(existingTask, {
+					...existingTask,
+					...changes,
+					title: changes.title.trim(),
+					description: changes.description?.trim() || existingTask.description,
+					priority: changes.priority || existingTask.priority,
+					dueDate: adjustToMexicoTimezone(changes.dueDate),
+				});
 				localStorage.setItem('tasks', JSON.stringify(state.tasks));
 			}
 		},
 
-		// Cambiar filtro
 		setFilter: (state, action) => {
 			state.filter = action.payload;
 		},
 
-		// Limpiar tareas inválidas
 		cleanTasks: (state) => {
 			state.tasks = state.tasks.filter(
 				(task) =>
@@ -99,12 +125,16 @@ export const { addTask, removeTask, toggleTaskStatus, updateTask, setFilter, cle
 // Selectores
 export const selectAllTasks = (state) => state.tasks?.tasks || [];
 
-// Selector memoizado para tareas filtradas
+// Selector optimizado para rendimiento
 export const selectFilteredTasks = createSelector(
 	[(state) => state.tasks?.tasks || [], (state) => state.tasks?.filter || 'all'],
 	(tasks, filter) => {
-		// Filtrar tareas nulas o indefinidas primero
-		const validTasks = tasks.filter((task) => task !== null && task !== undefined);
+		const validTasks = tasks.filter(
+			(task) => task !== null && task !== undefined && typeof task === 'object' && typeof task.id === 'string'
+		);
+
+		// Ordenar tareas por fecha de creación (asumiendo que tienes un campo createdAt)
+		const sortedTasks = [...validTasks].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
 		switch (filter) {
 			case 'all':
@@ -125,11 +155,6 @@ export const selectFilteredTasks = createSelector(
 	}
 );
 
-export const selectTaskById = (state, taskId) => {
-	const tasks = state.tasks?.tasks || [];
-	return tasks.find((task) => task !== null && task.id === taskId);
-};
-
 export const selectActiveFilter = (state) => state.tasks?.filter || 'all';
 
 // Contador de tareas por filtro para mostrar badges
@@ -147,5 +172,10 @@ export const selectTaskCounts = createSelector([selectAllTasks], (tasks) => {
 		low: validTasks.filter((task) => task.priority === 'low').length,
 	};
 });
+
+export const selectTaskById = (state, taskId) => {
+	const tasks = state.tasks?.tasks || [];
+	return tasks.find((task) => task !== null && task.id === taskId);
+};
 
 export default tasksSlice.reducer;
