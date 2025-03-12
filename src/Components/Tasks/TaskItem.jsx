@@ -1,6 +1,9 @@
+// ? Importaciones
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
+
+// ? Features
 import { toggleTaskStatus, removeTask, updateTask } from '@/Features/Tasks/tasksSlice';
 
 const TaskItem = ({ task }) => {
@@ -43,6 +46,7 @@ const TaskItem = ({ task }) => {
 		return date.toLocaleDateString('es-MX', options);
 	};
 
+	// Manejar la edición de la tarea
 	const handleEdit = () => {
 		if (!editedTask.title.trim()) return;
 

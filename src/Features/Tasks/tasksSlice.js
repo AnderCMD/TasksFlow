@@ -1,3 +1,4 @@
+// Importaciones
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 // Función auxiliar para ajustar la fecha a la zona horaria de México
@@ -54,6 +55,7 @@ export const tasksSlice = createSlice({
 	name: 'tasks',
 	initialState,
 	reducers: {
+		// Reducer para agregar una tarea
 		addTask: (state, action) => {
 			if (!action.payload?.title?.trim()) {
 				return;
@@ -71,11 +73,13 @@ export const tasksSlice = createSlice({
 			localStorage.setItem('tasks', JSON.stringify(state.tasks));
 		},
 
+		// Reducer para eliminar una tarea
 		removeTask: (state, action) => {
 			state.tasks = state.tasks.filter((task) => task !== null && task.id !== action.payload);
 			localStorage.setItem('tasks', JSON.stringify(state.tasks));
 		},
 
+		// Reducer para alternar el estado de completado de una tarea
 		toggleTaskStatus: (state, action) => {
 			const task = state.tasks.find((task) => task !== null && task.id === action.payload);
 			if (task) {
@@ -84,6 +88,7 @@ export const tasksSlice = createSlice({
 			}
 		},
 
+		// Reducer para actualizar una tarea
 		updateTask: (state, action) => {
 			const { id, ...changes } = action.payload;
 			if (!id || !changes.title?.trim()) {
@@ -104,6 +109,7 @@ export const tasksSlice = createSlice({
 			}
 		},
 
+		// Reducers para manejar el filtro, búsqueda y ordenamiento
 		setFilter: (state, action) => {
 			state.filter = action.payload;
 		},
@@ -116,6 +122,7 @@ export const tasksSlice = createSlice({
 			state.sortBy = action.payload;
 		},
 
+		// Reducer para limpiar tareas inválidas
 		cleanTasks: (state) => {
 			state.tasks = state.tasks.filter(
 				(task) =>
@@ -130,16 +137,8 @@ export const tasksSlice = createSlice({
 });
 
 // Acciones
-export const { 
-    addTask, 
-    removeTask, 
-    toggleTaskStatus, 
-    updateTask, 
-    setFilter, 
-    setSearch,
-    setSortBy,
-    cleanTasks 
-} = tasksSlice.actions;
+export const { addTask, removeTask, toggleTaskStatus, updateTask, setFilter, setSearch, setSortBy, cleanTasks } =
+	tasksSlice.actions;
 
 // Selectores
 export const selectAllTasks = (state) => state.tasks?.tasks || [];
@@ -219,6 +218,7 @@ export const selectTaskCounts = createSelector([selectAllTasks], (tasks) => {
 	};
 });
 
+// Selector para obtener una tarea por ID
 export const selectTaskById = (state, taskId) => {
 	const tasks = state.tasks?.tasks || [];
 	return tasks.find((task) => task !== null && task.id === taskId);

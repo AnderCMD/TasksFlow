@@ -1,3 +1,4 @@
+// Importaciones
 import { createSlice } from '@reduxjs/toolkit';
 
 // Función para cargar la preferencia de tema del localStorage

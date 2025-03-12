@@ -1,6 +1,9 @@
+// ? Importaciones
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
+
+// ? Features
 import { selectTaskCounts, selectActiveFilter, setFilter, setSearch, setSortBy } from '@/Features/Tasks/tasksSlice';
 
 const TaskFilter = () => {
@@ -21,16 +24,19 @@ const TaskFilter = () => {
 		{ id: 'low', label: 'Prioridad baja', icon: 'fa-arrow-down' },
 	];
 
+	// Cambiar el filtro activo
 	const handleFilterChange = (filterId) => {
 		dispatch(setFilter(filterId));
 	};
 
+	// Cambiar el término de búsqueda
 	const handleSearchChange = (e) => {
 		const value = e.target.value;
 		setSearchTerm(value);
 		dispatch(setSearch(value));
 	};
 
+	// Cambiar el orden de las tareas
 	const handleSortChange = (e) => {
 		dispatch(setSortBy(e.target.value));
 	};

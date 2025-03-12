@@ -1,7 +1,12 @@
+// ? Importaciones
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// ? Features
 import { selectFilteredTasks, selectActiveFilter } from '@/Features/Tasks/tasksSlice';
-import TaskItem from './TaskItem';
+
+// ? Componentes
+import TaskItem from '@/Components/Tasks/TaskItem';
 
 const TasksList = () => {
 	const tasks = useSelector(selectFilteredTasks) || [];

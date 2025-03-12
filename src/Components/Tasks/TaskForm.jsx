@@ -1,7 +1,10 @@
+// ? Importaciones
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// ? Features
 import { addTask } from '@/Features/Tasks/tasksSlice';
 
 const TaskForm = () => {
@@ -14,6 +17,7 @@ const TaskForm = () => {
 		dueDate: '',
 	});
 
+	// Manejar el cambio de los campos del formulario
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData({
@@ -22,6 +26,7 @@ const TaskForm = () => {
 		});
 	};
 
+	// Manejar el envío del formulario
 	const handleSubmit = (e) => {
 		e.preventDefault();
 

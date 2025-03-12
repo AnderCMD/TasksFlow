@@ -1,4 +1,7 @@
+// ? Importaciones
 import { motion } from 'framer-motion';
+
+// ? Componentes
 import DarkMode from '../UI/DarkMode';
 
 const Header = () => {
