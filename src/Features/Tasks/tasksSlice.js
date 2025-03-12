@@ -1,8 +1,9 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { createSlice, nanoid, createSelector } from '@reduxjs/toolkit';
 
 // Recuperar tareas del localStorage si existen
 const loadTasksFromStorage = () => {
 	try {
+		// Obtener las tareas del localStorage
 		const storedTasks = localStorage.getItem('tasks');
 		if (!storedTasks) return [];
 
@@ -116,24 +117,27 @@ export const { addTask, removeTask, toggleTaskStatus, updateTask, setFilter, cle
 
 // Selectores
 export const selectAllTasks = (state) => state.tasks.tasks;
-export const selectFilteredTasks = (state) => {
-	const tasks = state.tasks.tasks;
-	const filter = state.tasks.filter;
 
-	// Filtrar tareas nulas o indefinidas primero
-	const validTasks = tasks.filter((task) => task !== null && task !== undefined);
+// Selector memoizado para tareas filtradas
+export const selectFilteredTasks = createSelector(
+	[(state) => state.tasks.tasks, (state) => state.tasks.filter],
+	(tasks, filter) => {
+		// Filtrar tareas nulas o indefinidas primero
+		const validTasks = tasks.filter((task) => task !== null && task !== undefined);
 
-	switch (filter) {
-		case 'all':
-			return validTasks;
-		case 'active':
-			return validTasks.filter((task) => !task.completed);
-		case 'completed':
-			return validTasks.filter((task) => task.completed);
-		default:
-			return validTasks;
+		switch (filter) {
+			case 'all':
+				return validTasks;
+			case 'active':
+				return validTasks.filter((task) => !task.completed);
+			case 'completed':
+				return validTasks.filter((task) => task.completed);
+			default:
+				return validTasks;
+		}
 	}
-};
+);
+
 export const selectTaskById = (state, taskId) => state.tasks.tasks.find((task) => task !== null && task.id === taskId);
 export const selectActiveFilter = (state) => state.tasks.filter;
 

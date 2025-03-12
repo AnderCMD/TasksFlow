@@ -1,23 +1,15 @@
 // ? Importaciones
-import { useState, useEffect } from 'react';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTheme, selectTheme } from '@/Features/Theme/themeSlice';
 // ? Estilos
 import '@/Styles/DarkMode.css';
 
 export default function DarkMode() {
-	const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-
-	useEffect(() => {
-		if (theme === 'dark') {
-			document.querySelector('html').classList.add('dark');
-		} else {
-			document.querySelector('html').classList.remove('dark');
-		}
-		localStorage.setItem('theme', theme);
-	}, [theme]);
+	const dispatch = useDispatch();
+	const theme = useSelector(selectTheme);
 
 	const handleChangeTheme = () => {
-		setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
+		dispatch(toggleTheme());
 	};
 
 	return (
