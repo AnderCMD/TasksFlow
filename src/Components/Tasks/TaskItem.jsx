@@ -42,7 +42,7 @@ const TaskItem = ({ task }) => {
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -10 }}
 			layout
-			className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden mb-4 
+			className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden
 				${
 					task.completed
 						? 'border-l-4 border-green-500 dark:border-green-600'
@@ -58,35 +58,27 @@ const TaskItem = ({ task }) => {
 						whileTap={{ scale: 0.9 }}
 						onClick={() => dispatch(toggleTaskStatus(task.id))}
 						className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-colors
-							${
-								task.completed
-									? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
-									: 'border-gray-300 dark:border-gray-600 hover:border-indigo-500 dark:hover:border-indigo-400'
-							}`}>
+						${
+							task.completed
+								? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
+								: 'border-gray-300 dark:border-gray-600 hover:border-indigo-500 dark:hover:border-indigo-400'
+						}`}>
 						{task.completed && <i className='fa-solid fa-check text-white text-xs'></i>}
 					</motion.button>
 				</div>
 
-				<div className='flex-1' onClick={() => dispatch(toggleTaskStatus(task.id))}>
+				<div className='flex-1 min-w-0' onClick={() => dispatch(toggleTaskStatus(task.id))}>
 					<h3
-						className={`font-medium text-gray-800 dark:text-white transition-colors ${
-							task.completed ? 'line-through text-gray-500 dark:text-gray-400' : ''
-						}`}>
+						className={`text-base sm:text-lg font-medium mb-1 text-gray-800 dark:text-white truncate
+						${task.completed ? 'line-through text-gray-500 dark:text-gray-400' : ''}`}>
 						{task.title}
 					</h3>
-
 					{task.description && (
-						<p
-							className={`mt-1 text-sm text-gray-600 dark:text-gray-400 transition-colors ${
-								task.completed ? 'line-through text-gray-400 dark:text-gray-500' : ''
-							}`}>
-							{task.description}
-						</p>
+						<p className='text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-2'>{task.description}</p>
 					)}
-
-					<div className='mt-2 flex flex-wrap gap-2'>
+					<div className='flex flex-wrap items-center gap-2 text-sm'>
 						{task.dueDate && (
-							<span className='inline-flex items-center text-xs px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'>
+							<span className='inline-flex items-center text-xs text-gray-500 dark:text-gray-400'>
 								<i className='fa-regular fa-calendar mr-1'></i>
 								{formatDate(task.dueDate)}
 							</span>
@@ -98,7 +90,6 @@ const TaskItem = ({ task }) => {
 						</span>
 					</div>
 				</div>
-
 				<motion.div
 					className='flex gap-2 self-end sm:self-center'
 					initial={{ opacity: 0 }}

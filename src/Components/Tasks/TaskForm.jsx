@@ -65,12 +65,16 @@ const TaskForm = () => {
 			<motion.form
 				onSubmit={handleSubmit}
 				layout
-				className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 transition-all duration-300'>
+				className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-5 transition-all duration-300'>
 				<div className='flex items-center mb-4 gap-3'>
+
 					<motion.span
 						initial={{ scale: 0 }}
 						animate={{ scale: 1 }}
-						className='flex-none w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-md'>
+						className='flex-none w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-md'
+						onClick={() => setExpanded(true)}
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}>
 						<i className='fa-solid fa-plus'></i>
 					</motion.span>
 
@@ -81,7 +85,7 @@ const TaskForm = () => {
 						onChange={handleChange}
 						onClick={() => setExpanded(true)}
 						placeholder='Añadir nueva tarea'
-						className='flex-1 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400 py-2 outline-none text-gray-800 dark:text-white transition-colors placeholder-gray-400 dark:placeholder-gray-500'
+						className='flex-1 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400 py-2 outline-none text-gray-800 dark:text-white transition-colors placeholder-gray-400 dark:placeholder-gray-500 min-w-0'
 						autoComplete='off'
 					/>
 				</div>
@@ -118,7 +122,7 @@ const TaskForm = () => {
 										{['high', 'medium', 'low'].map((priority) => (
 											<label
 												key={priority}
-												className={`flex-1 flex items-center justify-center gap-1.5 py-2 cursor-pointer transition-colors
+												className={`flex-1 flex items-center justify-center gap-1.5 py-2 cursor-pointer transition-colors text-sm
 													${
 														formData.priority === priority
 															? 'bg-indigo-500 text-white'
@@ -133,7 +137,7 @@ const TaskForm = () => {
 													className='sr-only'
 												/>
 												<i className={`fa-solid ${priorityIcons[priority]}`}></i>
-												<span className='capitalize text-sm'>
+												<span className='hidden sm:inline capitalize'>
 													{priority === 'high'
 														? 'Alta'
 														: priority === 'medium'
@@ -166,7 +170,7 @@ const TaskForm = () => {
 									onClick={() => setExpanded(false)}
 									whileHover={{ scale: 1.02 }}
 									whileTap={{ scale: 0.98 }}
-									className='px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium'>
+									className='px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium text-sm'>
 									Cancelar
 								</motion.button>
 
@@ -174,7 +178,7 @@ const TaskForm = () => {
 									type='submit'
 									whileHover={{ scale: 1.02 }}
 									whileTap={{ scale: 0.98 }}
-									className='px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-md hover:shadow-lg transition-shadow font-medium flex items-center gap-2'>
+									className='px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-md hover:shadow-lg transition-shadow font-medium text-sm flex items-center gap-2'>
 									<i className='fa-solid fa-save'></i>
 									Guardar
 								</motion.button>

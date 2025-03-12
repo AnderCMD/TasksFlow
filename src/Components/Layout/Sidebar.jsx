@@ -18,21 +18,34 @@ const Sidebar = () => {
 
 	// Opciones de navegación con iconos modernos de FontAwesome 6
 	const navOptions = [
-		{ icon: 'fa-house', label: 'Inicio', active: true },
-		{ icon: 'fa-calendar-days', label: 'Calendario', active: false },
-		{ icon: 'fa-chart-column', label: 'Estadísticas', active: false },
-		{ icon: 'fa-sliders', label: 'Configuración', active: false },
+		{ icon: 'fa-house', label: 'Inicio', active: true, URL: '/' },
+		{ icon: 'fa-calendar-days', label: 'Calendario', active: false, URL: '#' },
+		{ icon: 'fa-chart-column', label: 'Estadísticas', active: false, URL: '#' },
+		{ icon: 'fa-sliders', label: 'Configuración', active: false, URL: '#' },
 	];
 
 	return (
 		<>
+			{/* Overlay para móvil */}
+			<AnimatePresence>
+				{isOpen && (
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 0.5 }}
+						exit={{ opacity: 0 }}
+						className='fixed inset-0 bg-black z-10 md:hidden'
+						onClick={() => setIsOpen(false)}
+					/>
+				)}
+			</AnimatePresence>
+
 			{/* Botón de menú para móvil */}
-			<div className='md:hidden fixed bottom-4 right-4 z-10'>
+			<div className='md:hidden fixed bottom-4 right-4 z-20'>
 				<motion.button
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
 					onClick={() => setIsOpen(!isOpen)}
-					className='bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 rounded-full shadow-lg'>
+					className='bg-gradient-to-r from-indigo-500 to-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg'>
 					<i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
 				</motion.button>
 			</div>
@@ -41,14 +54,14 @@ const Sidebar = () => {
 			<AnimatePresence>
 				{isOpen && (
 					<motion.div
-						initial={{ x: '100%', opacity: 0 }}
-						animate={{ x: 0, opacity: 1 }}
-						exit={{ x: '100%', opacity: 0 }}
-						transition={{ duration: 0.3, type: 'spring', stiffness: 300, damping: 30 }}
-						className='fixed inset-y-0 right-0 w-72 bg-white dark:bg-gray-800 shadow-2xl z-20 md:hidden p-6 overflow-y-auto'>
+						initial={{ x: '-100%' }}
+						animate={{ x: 0 }}
+						exit={{ x: '-100%' }}
+						transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+						className='fixed inset-y-0 left-0 w-fit bg-white dark:bg-gray-800 shadow-2xl z-20 md:hidden p-6 overflow-y-auto'>
 						<button
 							onClick={() => setIsOpen(false)}
-							className='absolute top-4 right-4 bg-gray-100 dark:bg-gray-700 rounded-full p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors'>
+							className='absolute top-4 left-4 w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors'>
 							<i className='fa-solid fa-xmark'></i>
 						</button>
 						<SidebarContent
@@ -63,7 +76,7 @@ const Sidebar = () => {
 			</AnimatePresence>
 
 			{/* Sidebar para escritorio */}
-			<aside className='hidden md:block w-72 bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 self-start sticky top-4 hover:shadow-lg'>
+			<aside className='hidden md:block w-fit bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 self-start sticky top-4 hover:shadow-lg'>
 				<SidebarContent
 					totalTasks={totalTasks}
 					completedTasks={completedTasks}
@@ -79,7 +92,7 @@ const Sidebar = () => {
 // Componente para el contenido del sidebar
 const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRate, navOptions }) => {
 	return (
-		<div className='space-y-8'>
+		<div className='space-y-8 w-fit'>
 			<div className='text-center border-b border-gray-200 dark:border-gray-700 pb-6'>
 				<motion.div
 					whileHover={{ scale: 1.05 }}
@@ -100,7 +113,7 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 							whileHover={{ x: 4 }}
 							transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
 							<a
-								href='#'
+								href={option.URL}
 								className={`flex items-center px-4 py-3 rounded-xl transition-all ${
 									option.active
 										? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-md'
@@ -154,9 +167,9 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 							whileHover={{ y: -4 }}
 							transition={{ type: 'spring', stiffness: 400, damping: 10 }}
 							className='bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl shadow-sm'>
-							<div className='flex justify-between items-start'>
+							<div className='flex justify-between items-center gap-2'>
 								<p className='text-xs font-medium text-gray-600 dark:text-gray-400'>Completadas</p>
-								<div className='h-6 w-6 rounded-full flex items-center justify-center bg-green-100 dark:bg-green-900/20'>
+								<div className='p-2 rounded-full flex items-center justify-center bg-green-100 dark:bg-green-900/20'>
 									<i className='fa-solid fa-check text-xs text-green-500 dark:text-green-400'></i>
 								</div>
 							</div>
@@ -168,9 +181,9 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 							whileHover={{ y: -4 }}
 							transition={{ type: 'spring', stiffness: 400, damping: 10 }}
 							className='bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl shadow-sm'>
-							<div className='flex justify-between items-start'>
+							<div className='flex justify-between items-center gap-2'>
 								<p className='text-xs font-medium text-gray-600 dark:text-gray-400'>Pendientes</p>
-								<div className='h-6 w-6 rounded-full flex items-center justify-center bg-amber-100 dark:bg-amber-900/20'>
+								<div className='p-2 rounded-full flex items-center justify-center bg-amber-100 dark:bg-amber-900/20'>
 									<i className='fa-solid fa-clock text-xs text-amber-500 dark:text-amber-400'></i>
 								</div>
 							</div>
@@ -182,9 +195,9 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 						whileHover={{ y: -4 }}
 						transition={{ type: 'spring', stiffness: 400, damping: 10 }}
 						className='bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 p-4 rounded-xl shadow-sm'>
-						<div className='flex justify-between items-start'>
+						<div className='flex justify-between items-center'>
 							<p className='text-xs font-medium text-gray-600 dark:text-gray-400'>Total de tareas</p>
-							<div className='h-6 w-6 rounded-full flex items-center justify-center bg-blue-100 dark:bg-blue-900/20'>
+							<div className='p-2 rounded-full flex items-center justify-center bg-blue-100 dark:bg-blue-900/20'>
 								<i className='fa-solid fa-list-check text-xs text-blue-500 dark:text-blue-400'></i>
 							</div>
 						</div>
