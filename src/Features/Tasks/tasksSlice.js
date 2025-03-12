@@ -1,4 +1,4 @@
-import { createSlice, nanoid, createSelector } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 // Recuperar tareas del localStorage si existen
 const loadTasksFromStorage = () => {
@@ -6,13 +6,10 @@ const loadTasksFromStorage = () => {
 		// Obtener las tareas del localStorage
 		const storedTasks = localStorage.getItem('tasks');
 		if (!storedTasks) return [];
-
 		// Parsear los datos del localStorage
 		const parsedTasks = JSON.parse(storedTasks);
-
 		// Validar que sea un array
 		if (!Array.isArray(parsedTasks)) return [];
-
 		// Filtrar elementos nulos y asegurarse de que tengan la estructura correcta
 		const validTasks = parsedTasks.filter(
 			(task) =>
@@ -21,12 +18,10 @@ const loadTasksFromStorage = () => {
 				typeof task.id === 'string' &&
 				typeof task.title === 'string'
 		);
-
 		// Si hay diferencia entre las tareas almacenadas y las válidas, actualizar localStorage
 		if (validTasks.length !== parsedTasks.length) {
 			localStorage.setItem('tasks', JSON.stringify(validTasks));
 		}
-
 		return validTasks;
 	} catch (error) {
 		console.error('Error al cargar tareas del localStorage:', error);
@@ -49,23 +44,9 @@ export const tasksSlice = createSlice({
 	initialState,
 	reducers: {
 		// Agregar tarea
-		addTask: {
-			reducer: (state, action) => {
-				state.tasks.push(action.payload);
-				localStorage.setItem('tasks', JSON.stringify(state.tasks));
-			},
-			prepare: (title, description = '') => {
-				return {
-					payload: {
-						id: nanoid(),
-						title,
-						description,
-						completed: false,
-						createdAt: new Date().toISOString(),
-						priority: 'medium', // 'low', 'medium', 'high'
-					},
-				};
-			},
+		addTask: (state, action) => {
+			state.tasks.push(action.payload);
+			localStorage.setItem('tasks', JSON.stringify(state.tasks));
 		},
 
 		// Eliminar tarea
@@ -116,11 +97,11 @@ export const tasksSlice = createSlice({
 export const { addTask, removeTask, toggleTaskStatus, updateTask, setFilter, cleanTasks } = tasksSlice.actions;
 
 // Selectores
-export const selectAllTasks = (state) => state.tasks.tasks;
+export const selectAllTasks = (state) => state.tasks?.tasks || [];
 
 // Selector memoizado para tareas filtradas
 export const selectFilteredTasks = createSelector(
-	[(state) => state.tasks.tasks, (state) => state.tasks.filter],
+	[(state) => state.tasks?.tasks || [], (state) => state.tasks?.filter || 'all'],
 	(tasks, filter) => {
 		// Filtrar tareas nulas o indefinidas primero
 		const validTasks = tasks.filter((task) => task !== null && task !== undefined);
@@ -132,13 +113,39 @@ export const selectFilteredTasks = createSelector(
 				return validTasks.filter((task) => !task.completed);
 			case 'completed':
 				return validTasks.filter((task) => task.completed);
+			case 'high':
+				return validTasks.filter((task) => task.priority === 'high');
+			case 'medium':
+				return validTasks.filter((task) => task.priority === 'medium');
+			case 'low':
+				return validTasks.filter((task) => task.priority === 'low');
 			default:
 				return validTasks;
 		}
 	}
 );
 
-export const selectTaskById = (state, taskId) => state.tasks.tasks.find((task) => task !== null && task.id === taskId);
-export const selectActiveFilter = (state) => state.tasks.filter;
+export const selectTaskById = (state, taskId) => {
+	const tasks = state.tasks?.tasks || [];
+	return tasks.find((task) => task !== null && task.id === taskId);
+};
+
+export const selectActiveFilter = (state) => state.tasks?.filter || 'all';
+
+// Contador de tareas por filtro para mostrar badges
+export const selectTaskCounts = createSelector([selectAllTasks], (tasks) => {
+	// Aseguramos que tasks sea un array incluso si viene undefined
+	const tasksArray = tasks || [];
+	const validTasks = tasksArray.filter((task) => task !== null && task !== undefined);
+
+	return {
+		all: validTasks.length,
+		active: validTasks.filter((task) => !task.completed).length,
+		completed: validTasks.filter((task) => task.completed).length,
+		high: validTasks.filter((task) => task.priority === 'high').length,
+		medium: validTasks.filter((task) => task.priority === 'medium').length,
+		low: validTasks.filter((task) => task.priority === 'low').length,
+	};
+});
 
 export default tasksSlice.reducer;

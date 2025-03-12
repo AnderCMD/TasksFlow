@@ -1,127 +1,188 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { motion } from 'framer-motion';
+import { nanoid } from '@reduxjs/toolkit';
+import { motion, AnimatePresence } from 'framer-motion';
 import { addTask } from '@/Features/Tasks/tasksSlice';
 
 const TaskForm = () => {
 	const dispatch = useDispatch();
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
-	const [priority, setPriority] = useState('medium');
-	const [error, setError] = useState('');
-	const [showForm, setShowForm] = useState(false);
+	const [expanded, setExpanded] = useState(false);
+	const [formData, setFormData] = useState({
+		title: '',
+		description: '',
+		priority: 'medium',
+		dueDate: '',
+	});
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		if (!title.trim()) {
-			setError('El título es obligatorio');
-			return;
-		}
+		// Validar que al menos haya un título
+		if (!formData.title.trim()) return;
 
-		dispatch(addTask(title, description));
+		// Crear y despachar la nueva tarea
+		dispatch(
+			addTask({
+				id: nanoid(),
+				title: formData.title.trim(),
+				description: formData.description.trim(),
+				completed: false,
+				priority: formData.priority,
+				dueDate: formData.dueDate || null,
+				createdAt: new Date().toISOString(),
+			})
+		);
 
 		// Limpiar el formulario
-		setTitle('');
-		setDescription('');
-		setPriority('medium');
-		setError('');
-		setShowForm(false);
+		setFormData({
+			title: '',
+			description: '',
+			priority: 'medium',
+			dueDate: '',
+		});
+
+		// Contraer el formulario
+		setExpanded(false);
+	};
+
+	// Iconos para prioridades
+	const priorityIcons = {
+		high: 'fa-arrow-up',
+		medium: 'fa-equals',
+		low: 'fa-arrow-down',
 	};
 
 	return (
-		<div>
-			{!showForm ? (
-				<motion.button
-					whileHover={{ scale: 1.02 }}
-					whileTap={{ scale: 0.98 }}
-					onClick={() => setShowForm(true)}
-					className='w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors'>
-					<span className='text-xl'>+</span>
-					<span>Añadir Nueva Tarea</span>
-				</motion.button>
-			) : (
-				<motion.form
-					onSubmit={handleSubmit}
-					initial={{ opacity: 0, y: -20 }}
-					animate={{ opacity: 1, y: 0 }}
-					exit={{ opacity: 0, y: -20 }}
-					transition={{ duration: 0.3 }}
-					className='bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700'>
-					<div className='mb-4'>
-						<label
-							htmlFor='title'
-							className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-							Título <span className='text-red-500'>*</span>
-						</label>
-						<input
-							id='title'
-							type='text'
-							value={title}
-							onChange={(e) => {
-								setTitle(e.target.value);
-								if (e.target.value.trim()) setError('');
-							}}
-							className={`w-full px-3 py-2 border ${
-								error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-							} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white`}
-							placeholder='¿Qué necesitas hacer?'
-						/>
-						{error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
-					</div>
+		<div className='mb-6'>
+			<motion.form
+				onSubmit={handleSubmit}
+				layout
+				className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 transition-all duration-300'>
+				<div className='flex items-center mb-4 gap-3'>
+					<motion.span
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						className='flex-none w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-md'>
+						<i className='fa-solid fa-plus'></i>
+					</motion.span>
 
-					<div className='mb-4'>
-						<label
-							htmlFor='description'
-							className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-							Descripción
-						</label>
-						<textarea
-							id='description'
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-							className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
-							placeholder='Detalles adicionales (opcional)'
-							rows={3}></textarea>
-					</div>
+					<input
+						type='text'
+						name='title'
+						value={formData.title}
+						onChange={handleChange}
+						onClick={() => setExpanded(true)}
+						placeholder='Añadir nueva tarea'
+						className='flex-1 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400 py-2 outline-none text-gray-800 dark:text-white transition-colors placeholder-gray-400 dark:placeholder-gray-500'
+						autoComplete='off'
+					/>
+				</div>
 
-					<div className='mb-4'>
-						<label
-							htmlFor='priority'
-							className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-							Prioridad
-						</label>
-						<select
-							id='priority'
-							value={priority}
-							onChange={(e) => setPriority(e.target.value)}
-							className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white'>
-							<option value='low'>Baja</option>
-							<option value='medium'>Media</option>
-							<option value='high'>Alta</option>
-						</select>
-					</div>
+				<AnimatePresence>
+					{expanded && (
+						<motion.div
+							initial={{ opacity: 0, height: 0 }}
+							animate={{ opacity: 1, height: 'auto' }}
+							exit={{ opacity: 0, height: 0 }}
+							transition={{ duration: 0.3 }}
+							className='space-y-4 overflow-hidden'>
+							<div>
+								<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+									<i className='fa-solid fa-align-left mr-2 text-indigo-500 dark:text-indigo-400'></i>
+									Descripción
+								</label>
+								<textarea
+									name='description'
+									value={formData.description}
+									onChange={handleChange}
+									placeholder='Añadir una descripción...'
+									rows='2'
+									className='w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg resize-none outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-colors text-gray-800 dark:text-white'></textarea>
+							</div>
 
-					<div className='flex justify-end gap-2'>
-						<button
-							type='button'
-							onClick={() => {
-								setShowForm(false);
-								setTitle('');
-								setDescription('');
-								setError('');
-							}}
-							className='px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'>
-							Cancelar
-						</button>
-						<button
-							type='submit'
-							className='px-4 py-2 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-700'>
-							Guardar Tarea
-						</button>
-					</div>
-				</motion.form>
-			)}
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+								<div>
+									<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+										<i className='fa-solid fa-flag mr-2 text-indigo-500 dark:text-indigo-400'></i>
+										Prioridad
+									</label>
+									<div className='flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden'>
+										{['high', 'medium', 'low'].map((priority) => (
+											<label
+												key={priority}
+												className={`flex-1 flex items-center justify-center gap-1.5 py-2 cursor-pointer transition-colors
+													${
+														formData.priority === priority
+															? 'bg-indigo-500 text-white'
+															: 'bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+													}`}>
+												<input
+													type='radio'
+													name='priority'
+													value={priority}
+													checked={formData.priority === priority}
+													onChange={handleChange}
+													className='sr-only'
+												/>
+												<i className={`fa-solid ${priorityIcons[priority]}`}></i>
+												<span className='capitalize text-sm'>
+													{priority === 'high'
+														? 'Alta'
+														: priority === 'medium'
+														? 'Media'
+														: 'Baja'}
+												</span>
+											</label>
+										))}
+									</div>
+								</div>
+
+								<div>
+									<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+										<i className='fa-solid fa-calendar-days mr-2 text-indigo-500 dark:text-indigo-400'></i>
+										Fecha límite
+									</label>
+									<input
+										type='date'
+										name='dueDate'
+										value={formData.dueDate}
+										onChange={handleChange}
+										className='w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-colors text-gray-800 dark:text-white'
+									/>
+								</div>
+							</div>
+
+							<div className='flex justify-end pt-2 gap-2'>
+								<motion.button
+									type='button'
+									onClick={() => setExpanded(false)}
+									whileHover={{ scale: 1.02 }}
+									whileTap={{ scale: 0.98 }}
+									className='px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium'>
+									Cancelar
+								</motion.button>
+
+								<motion.button
+									type='submit'
+									whileHover={{ scale: 1.02 }}
+									whileTap={{ scale: 0.98 }}
+									className='px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-md hover:shadow-lg transition-shadow font-medium flex items-center gap-2'>
+									<i className='fa-solid fa-save'></i>
+									Guardar
+								</motion.button>
+							</div>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</motion.form>
 		</div>
 	);
 };

@@ -34,23 +34,20 @@ function App() {
 	return (
 		<div className='min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300'>
 			<Header />
-
 			<div className='container mx-auto px-4 py-8 flex flex-col md:flex-row gap-6'>
 				<Sidebar />
-
 				<main className='flex-1'>
 					<div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 transition-colors duration-300'>
 						<h1 className='text-2xl font-bold mb-6 text-gray-800 dark:text-white'>Gestión de Tareas</h1>
-
 						<TaskForm />
 					</div>
-
 					<div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-300'>
-						<div className='flex justify-between items-center mb-6'>
-							<h2 className='text-xl font-semibold text-gray-800 dark:text-white'>Mis Tareas</h2>
+						<div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6'>
+							<h2 className='text-xl font-semibold text-gray-800 dark:text-white mb-4 sm:mb-0'>
+								Mis Tareas
+							</h2>
 							<TaskFilter />
 						</div>
-
 						<AnimatePresence>
 							<motion.div
 								initial={{ opacity: 0, y: 15 }}
