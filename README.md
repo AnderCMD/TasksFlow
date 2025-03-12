@@ -2,7 +2,7 @@
 
 TasksFlow es una aplicación moderna de gestión de tareas construida con React, Redux, Vite y TailwindCSS. Permite a los usuarios crear, organizar y realizar un seguimiento de sus tareas de manera eficiente con una interfaz atractiva y fácil de usar.
 
-![TasksFlow Screenshot](public/screenshot.png)
+![TasksFlow Screenshot](public/Images/Interfaz.png)
 
 ## 🚀 Características
 
@@ -24,17 +24,14 @@ TasksFlow es una aplicación moderna de gestión de tareas construida con React,
 
 1. Clonar el repositorio:
 ```bash
-git clone https://github.com/tu-usuario/tasksflow.git
-cd tasksflow
+git clone https://github.com/AnderCMD/TasksFlow.git
+cd TasksFlow
 ```
 
 2. Instalar dependencias:
 ```bash
 # Con npm
 npm install
-
-# Con yarn
-yarn
 
 # Con pnpm
 pnpm install
@@ -45,11 +42,8 @@ pnpm install
 # Con npm
 npm run dev
 
-# Con yarn
-yarn dev
-
 # Con pnpm
-pnpm dev
+pnpm run dev
 ```
 
 4. Abrir [http://localhost:5173](http://localhost:5173) en el navegador.
@@ -122,7 +116,9 @@ Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más det
 
 ## 👨‍💻 Autor
 
-[Tu Nombre](https://github.com/tu-usuario) - [tu-email@ejemplo.com](mailto:tu-email@ejemplo.com)
+[AnderCMD](https://github.com/AnderCMD)
+[andercmd@outlook.com](mailto:andercmd@outlook.com)
+[Portafolio](https://andercmd.dev)
 
 ---
 
