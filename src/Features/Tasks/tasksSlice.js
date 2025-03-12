@@ -53,7 +53,7 @@ export const tasksSlice = createSlice({
 				state.tasks.push(action.payload);
 				localStorage.setItem('tasks', JSON.stringify(state.tasks));
 			},
-			prepare: (title, description = '') => {
+			prepare: (title, description = '', priority = 'medium') => {
 				return {
 					payload: {
 						id: nanoid(),
@@ -61,7 +61,7 @@ export const tasksSlice = createSlice({
 						description,
 						completed: false,
 						createdAt: new Date().toISOString(),
-						priority: 'medium', // 'low', 'medium', 'high'
+						priority: priority, // 'low', 'medium', 'high'
 					},
 				};
 			},
