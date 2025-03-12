@@ -42,7 +42,7 @@ const TaskItem = ({ task }) => {
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -10 }}
 			layout
-			className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden
+			className={`bg-gradient-to-br from-gray-50 to-neutral-100 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden
 				${
 					task.completed
 						? 'border-l-4 border-green-500 dark:border-green-600'
@@ -97,7 +97,7 @@ const TaskItem = ({ task }) => {
 					<motion.button
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}
-						className='p-2 rounded-full text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors'
+						className='w-8 h-8 rounded-full text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors'
 						aria-label='Editar tarea'>
 						<i className='fa-solid fa-pen-to-square'></i>
 					</motion.button>
@@ -106,7 +106,7 @@ const TaskItem = ({ task }) => {
 						whileHover={{ scale: 1.1, color: '#ef4444' }}
 						whileTap={{ scale: 0.9 }}
 						onClick={() => dispatch(removeTask(task.id))}
-						className='p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors'
+						className='w-8 h-8 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors'
 						aria-label='Eliminar tarea'>
 						<i className='fa-solid fa-trash-can'></i>
 					</motion.button>

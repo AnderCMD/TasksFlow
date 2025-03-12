@@ -45,7 +45,7 @@ const TaskFilter = ({ filters = {}, onFilterChange }) => {
 
 	return (
 		<div className='mb-6'>
-			<div className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-5 transition-all duration-300'>
+			<div className='bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-md p-4 sm:p-5 transition-all duration-300'>
 				<div className='flex flex-col lg:flex-row justify-between gap-4'>
 					{/* Búsqueda */}
 					<div className='relative flex-1 min-w-0'>

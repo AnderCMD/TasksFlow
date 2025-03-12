@@ -38,16 +38,21 @@ function App() {
 				<Sidebar />
 				<main className='flex-1 min-w-0'>
 					{' '}
-					{/* Añadido min-w-0 para evitar desbordamiento */}
+					<div>
+						<motion.h1
+							initial={{ y: -20, opacity: 0 }}
+							animate={{ y: 0, opacity: 1 }}
+							transition={{ duration: 0.5 }}
+							className='text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-4'>
+							¡Bienvenido a TasksFlow!
+						</motion.h1>
+					</div>
 					<div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 mb-6 transition-colors duration-300'>
-						<h1 className='text-xl sm:text-2xl font-bold mb-6 text-gray-800 dark:text-white'>
-							Gestión de Tareas
-						</h1>
 						<div className='flex flex-col'>
 							<div className='flex items-center justify-between mb-4'>
-								<h2 className='text-lg sm:text-xl font-semibold text-gray-800 dark:text-white'>
+								<h1 className='text-lg sm:text-xl font-semibold text-gray-800 dark:text-white'>
 									Añadir Nueva Tarea
-								</h2>
+								</h1>
 							</div>
 							<TaskForm />
 						</div>
