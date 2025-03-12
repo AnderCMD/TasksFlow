@@ -122,7 +122,7 @@ Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más det
 
 ## 👨‍💻 Autor
 
-[Tu Nombre](https://github.com/tu-usuario) - [tu-email@ejemplo.com](mailto:tu-email@ejemplo.com)
+[AnderCMD](https://github.com/AnderCMD) - [andercmd@outlook.com](mailto:andercmd@outlook.com)
 
 ---
 
