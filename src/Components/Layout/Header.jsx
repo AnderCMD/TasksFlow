@@ -1,5 +1,6 @@
 // ? Importaciones
 import { motion } from 'framer-motion';
+import packageJson from '../../../package.json';
 
 // ? Componentes
 import DarkMode from '../UI/DarkMode';
@@ -24,6 +25,9 @@ const Header = () => {
 						Tasks
 						<span className='bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent font-extrabold'>
 							Flow
+						</span>
+						<span className='text-xs text-gray-500 dark:text-gray-400 ml-2'>
+							v{packageJson.version}
 						</span>
 					</motion.h1>
 				</section>

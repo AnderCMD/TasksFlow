@@ -18,10 +18,10 @@ const Sidebar = () => {
 
 	// Opciones de navegación con iconos modernos de FontAwesome 6
 	const navOptions = [
-		{ icon: 'fa-house', label: 'Inicio', active: true, URL: '/' },
-		{ icon: 'fa-calendar-days', label: 'Calendario', active: false, URL: '#' },
-		{ icon: 'fa-chart-column', label: 'Estadísticas', active: false, URL: '#' },
-		{ icon: 'fa-sliders', label: 'Configuración', active: false, URL: '#' },
+		{ icon: 'fa-house', label: 'Inicio', active: true, URL: '/', soon: false },
+		{ icon: 'fa-calendar-days', label: 'Calendario', active: false, URL: '#', soon: true },
+		{ icon: 'fa-chart-column', label: 'Estadísticas', active: false, URL: '#', soon: true },
+		{ icon: 'fa-sliders', label: 'Configuración', active: false, URL: '#', soon: true },
 	];
 
 	return (
@@ -124,6 +124,11 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 										option.active ? '' : 'text-indigo-500 dark:text-indigo-400'
 									}`}></i>
 								<span className='ml-4'>{option.label}</span>
+								{option.soon && (
+									<span className='ml-auto inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold rounded-full bg-gray-100 dark:bg-gray-700/20 text-gray-400 dark:text-gray-500'>
+										Próximamente
+									</span>
+								)}
 								{option.active && (
 									<div className='ml-auto'>
 										<i className='fa-solid fa-chevron-right text-xs opacity-70'></i>

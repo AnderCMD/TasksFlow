@@ -101,7 +101,7 @@ const TaskForm = () => {
 							animate={{ opacity: 1, height: 'auto' }}
 							exit={{ opacity: 0, height: 0 }}
 							transition={{ duration: 0.3 }}
-							className='space-y-4 overflow-hidden'>
+							className='space-y-4 overflow-hidden p-4'>
 							<div>
 								<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
 									<i className='fa-solid fa-align-left mr-2 text-indigo-500 dark:text-indigo-400'></i>
