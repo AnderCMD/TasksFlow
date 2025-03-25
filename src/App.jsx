@@ -3,32 +3,32 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Componentes
-import TasksList from '@/Components/Tasks/TasksList';
+import TaskList from '@/Components/Tasks/TasksList';
 import TaskForm from '@/Components/Tasks/TaskForm';
 import Header from '@/Components/Layout/Header';
 import Sidebar from '@/Components/Layout/Sidebar';
 import TaskFilter from '@/Components/Tasks/TaskFilter';
 
 // Features
-import { selectTheme } from '@/Features/Theme/themeSlice';
-import { cleanTasks } from '@/Features/Tasks/tasksSlice';
+import { seleccionarTema } from '@/Features/Theme/temaSlice';
+import { limpiarTareas } from '@/Features/Tasks/tareasSlice';
 
-function App() {
-	const theme = useSelector(selectTheme);
+export default function App() {
+	const tema = useSelector(seleccionarTema);
 	const dispatch = useDispatch();
 
 	// Aplicar tema al cargar la app
 	useEffect(() => {
-		if (theme === 'dark') {
+		if (tema === 'oscuro') {
 			document.documentElement.classList.add('dark');
 		} else {
 			document.documentElement.classList.remove('dark');
 		}
-	}, [theme]);
+	}, [tema]);
 
 	// Limpiar tareas inválidas al iniciar la aplicación
 	useEffect(() => {
-		dispatch(cleanTasks());
+		dispatch(limpiarTareas());
 	}, [dispatch]);
 
 	return (
@@ -44,7 +44,7 @@ function App() {
 							animate={{ y: 0, opacity: 1 }}
 							transition={{ duration: 0.5 }}
 							className='text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-4'>
-							¡Bienvenido a TasksFlow!
+							¡Bienvenido a TasksFLow!
 						</motion.h1>
 					</div>
 					<div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 mb-6 transition-colors duration-300'>
@@ -78,7 +78,7 @@ function App() {
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.3 }}>
-								<TasksList />
+								<TaskList />
 							</motion.div>
 						</AnimatePresence>
 					</div>
@@ -87,5 +87,3 @@ function App() {
 		</div>
 	);
 }
-
-export default App;

@@ -5,7 +5,7 @@ import packageJson from '../../../package.json';
 // ? Componentes
 import DarkMode from '../UI/DarkMode';
 
-const Header = () => {
+export default function Header() {
 	return (
 		<header className='bg-white dark:bg-gray-800 shadow-md rounded-lg mb-6 transition-colors duration-300'>
 			<nav className='container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center'>
@@ -26,9 +26,7 @@ const Header = () => {
 						<span className='bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent font-extrabold'>
 							Flow
 						</span>
-						<span className='text-xs text-gray-500 dark:text-gray-400 ml-2'>
-							v{packageJson.version}
-						</span>
+						<span className='text-xs text-gray-500 dark:text-gray-400 ml-2'>v{packageJson.version}</span>
 					</motion.h1>
 				</section>
 
@@ -42,4 +40,3 @@ const Header = () => {
 	);
 };
 
-export default Header;

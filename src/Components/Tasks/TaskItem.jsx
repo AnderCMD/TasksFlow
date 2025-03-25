@@ -4,65 +4,65 @@ import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
 
 // ? Features
-import { toggleTaskStatus, removeTask, updateTask } from '@/Features/Tasks/tasksSlice';
+import { alternarEstadoTarea, eliminarTarea, actualizarTarea } from '@/Features/Tasks/tareasSlice';
 
-const TaskItem = ({ task }) => {
+const ElementoTarea = ({ tarea }) => {
 	const dispatch = useDispatch();
-	const [showActions, setShowActions] = useState(false);
-	const [isEditing, setIsEditing] = useState(false);
-	const [editedTask, setEditedTask] = useState(task);
+	const [mostrarAcciones, setMostrarAcciones] = useState(false);
+	const [estaEditando, setEstaEditando] = useState(false);
+	const [tareaEditada, setTareaEditada] = useState(tarea);
 
 	// Prioridades con iconos y colores
-	const priorities = {
-		high: {
+	const prioridades = {
+		alta: {
 			label: 'Alta',
 			icon: 'fa-solid fa-arrow-up',
 			class: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
 		},
-		medium: {
+		media: {
 			label: 'Media',
 			icon: 'fa-solid fa-equals',
 			class: 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300',
 		},
-		low: {
+		baja: {
 			label: 'Baja',
 			icon: 'fa-solid fa-arrow-down',
 			class: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
 		},
 	};
 
-	const priority = priorities[task.priority] || priorities.medium;
+	const prioridad = prioridades[tarea.prioridad] || prioridades.media;
 
 	// Formato de fecha más legible para México
-	const formatDate = (dateString) => {
-		if (!dateString) return '';
-		const date = new Date(dateString);
-		const options = {
+	const formatearFecha = (cadenaFecha) => {
+		if (!cadenaFecha) return '';
+		const fecha = new Date(cadenaFecha);
+		const opciones = {
 			day: 'numeric',
 			month: 'long',
 			year: 'numeric',
 			timeZone: 'America/Mexico_City',
 		};
-		return date.toLocaleDateString('es-MX', options);
+		return fecha.toLocaleDateString('es-MX', opciones);
 	};
 
 	// Manejar la edición de la tarea
-	const handleEdit = () => {
-		if (!editedTask.title.trim()) return;
+	const manejarEdicion = () => {
+		if (!tareaEditada.titulo.trim()) return;
 
-		const updatedTask = {
-			id: task.id,
-			...editedTask,
-			title: editedTask.title.trim(),
-			description: editedTask.description?.trim() || '',
-			dueDate: editedTask.dueDate || null, // Aseguramos que dueDate sea null si no hay fecha
+		const tareaActualizada = {
+			id: tarea.id,
+			...tareaEditada,
+			titulo: tareaEditada.titulo.trim(),
+			descripcion: tareaEditada.descripcion?.trim() || '',
+			fechaVencimiento: tareaEditada.fechaVencimiento || null, // Aseguramos que fechaVencimiento sea null si no hay fecha
 		};
 
-		dispatch(updateTask(updatedTask));
-		setIsEditing(false);
+		dispatch(actualizarTarea(tareaActualizada));
+		setEstaEditando(false);
 	};
 
-	if (isEditing) {
+	if (estaEditando) {
 		return (
 			<motion.div
 				initial={{ opacity: 0, y: 10 }}
@@ -72,14 +72,14 @@ const TaskItem = ({ task }) => {
 				<div className='space-y-4'>
 					<input
 						type='text'
-						value={editedTask.title}
-						onChange={(e) => setEditedTask({ ...editedTask, title: e.target.value })}
+						value={tareaEditada.titulo}
+						onChange={(e) => setTareaEditada({ ...tareaEditada, titulo: e.target.value })}
 						className='w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-colors text-gray-800 dark:text-white'
 						placeholder='Título de la tarea'
 					/>
 					<textarea
-						value={editedTask.description || ''}
-						onChange={(e) => setEditedTask({ ...editedTask, description: e.target.value })}
+						value={tareaEditada.descripcion || ''}
+						onChange={(e) => setTareaEditada({ ...tareaEditada, descripcion: e.target.value })}
 						className='w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-colors text-gray-800 dark:text-white resize-none'
 						placeholder='Descripción de la tarea'
 						rows='2'
@@ -91,26 +91,28 @@ const TaskItem = ({ task }) => {
 								Prioridad
 							</label>
 							<div className='flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden'>
-								{['high', 'medium', 'low'].map((priority) => (
+								{['alta', 'media', 'baja'].map((prioridad) => (
 									<label
-										key={priority}
+										key={prioridad}
 										className={`flex-1 flex items-center justify-center gap-1.5 py-2 cursor-pointer transition-colors text-sm
                                             ${
-												editedTask.priority === priority
+												tareaEditada.prioridad === prioridad
 													? 'bg-indigo-500 text-white'
 													: 'bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
 											}`}>
 										<input
 											type='radio'
-											name='priority'
-											value={priority}
-											checked={editedTask.priority === priority}
-											onChange={(e) => setEditedTask({ ...editedTask, priority: e.target.value })}
+											name='prioridad'
+											value={prioridad}
+											checked={tareaEditada.prioridad === prioridad}
+											onChange={(e) =>
+												setTareaEditada({ ...tareaEditada, prioridad: e.target.value })
+											}
 											className='sr-only'
 										/>
-										<i className={`fa-solid ${priorities[priority].icon}`}></i>
+										<i className={`fa-solid ${prioridades[prioridad].icon}`}></i>
 										<span className='hidden sm:inline capitalize'>
-											{priorities[priority].label}
+											{prioridades[prioridad].label}
 										</span>
 									</label>
 								))}
@@ -123,11 +125,11 @@ const TaskItem = ({ task }) => {
 							</label>
 							<input
 								type='date'
-								value={editedTask.dueDate || ''} // Aseguramos que sea string vacío si es null
+								value={tareaEditada.fechaVencimiento || ''} // Aseguramos que sea string vacío si es null
 								onChange={(e) =>
-									setEditedTask({
-										...editedTask,
-										dueDate: e.target.value || null, // Si está vacío, guardamos null
+									setTareaEditada({
+										...tareaEditada,
+										fechaVencimiento: e.target.value || null, // Si está vacío, guardamos null
 									})
 								}
 								className='w-full px-4 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-colors text-gray-800 dark:text-white'
@@ -137,7 +139,7 @@ const TaskItem = ({ task }) => {
 					<div className='flex justify-end gap-2 pt-2'>
 						<motion.button
 							type='button'
-							onClick={() => setIsEditing(false)}
+							onClick={() => setEstaEditando(false)}
 							whileHover={{ scale: 1.02 }}
 							whileTap={{ scale: 0.98 }}
 							className='px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium text-sm'>
@@ -145,7 +147,7 @@ const TaskItem = ({ task }) => {
 						</motion.button>
 						<motion.button
 							type='button'
-							onClick={handleEdit}
+							onClick={manejarEdicion}
 							whileHover={{ scale: 1.02 }}
 							whileTap={{ scale: 0.98 }}
 							className='px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-md hover:shadow-lg transition-shadow font-medium text-sm'>
@@ -165,60 +167,63 @@ const TaskItem = ({ task }) => {
 			layout
 			className={`bg-gradient-to-br from-gray-50 to-neutral-100 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden
 				${
-					task.completed
+					tarea.completada
 						? 'border-l-4 border-green-500 dark:border-green-600'
 						: 'border-l-4 border-indigo-500 dark:border-indigo-600'
 				}`}
-			onMouseEnter={() => setShowActions(true)}
-			onMouseLeave={() => setShowActions(false)}
-			onTouchStart={() => setShowActions(true)}>
+			onMouseEnter={() => setMostrarAcciones(true)}
+			onMouseLeave={() => setMostrarAcciones(false)}
+			onTouchStart={() => setMostrarAcciones(true)}>
 			<div className='p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4'>
 				<div className='flex-none'>
 					<motion.button
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}
-						onClick={() => dispatch(toggleTaskStatus(task.id))}
+						onClick={() => dispatch(alternarEstadoTarea(tarea.id))}
 						className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-colors
 						${
-							task.completed
+							tarea.completada
 								? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
 								: 'border-gray-300 dark:border-gray-600 hover:border-indigo-500 dark:hover:border-indigo-400'
 						}`}>
-						{task.completed && <i className='fa-solid fa-check text-white text-xs'></i>}
+						{tarea.completada && <i className='fa-solid fa-check text-white text-xs'></i>}
 					</motion.button>
 				</div>
 
-				<div className='flex-1 min-w-0' onClick={() => dispatch(toggleTaskStatus(task.id))}>
+				<div className='flex-1 min-w-0' onClick={() => dispatch(alternarEstadoTarea(tarea.id))}>
 					<h3
 						className={`text-base sm:text-lg font-medium mb-1 text-gray-800 dark:text-white truncate
-						${task.completed ? 'line-through text-gray-500 dark:text-gray-400' : ''}`}>
-						{task.title}
+						${tarea.completada ? 'line-through text-gray-500 dark:text-gray-400' : ''}`}>
+						{tarea.titulo}
 					</h3>
-					{task.description && (
-						<p className='text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-2'>{task.description}</p>
+					{tarea.descripcion && (
+						<p className='text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-2'>
+							{tarea.descripcion}
+						</p>
 					)}
 					<div className='flex flex-wrap items-center gap-2 text-sm'>
-						{task.dueDate && (
+						{tarea.fechaVencimiento && (
 							<span className='inline-flex items-center text-xs text-gray-500 dark:text-gray-400'>
 								<i className='fa-regular fa-calendar mr-1'></i>
-								{formatDate(task.dueDate)}
+								{formatearFecha(tarea.fechaVencimiento)}
 							</span>
 						)}
 
-						<span className={`inline-flex items-center text-xs px-2.5 py-1 rounded-full ${priority.class}`}>
-							<i className={`${priority.icon} mr-1`}></i>
-							{priority.label}
+						<span
+							className={`inline-flex items-center text-xs px-2.5 py-1 rounded-full ${prioridad.class}`}>
+							<i className={`${prioridad.icon} mr-1`}></i>
+							{prioridad.label}
 						</span>
 					</div>
 				</div>
 				<motion.div
 					className='flex gap-2 self-end sm:self-center'
 					initial={{ opacity: 0 }}
-					animate={{ opacity: showActions ? 1 : 0 }}>
+					animate={{ opacity: mostrarAcciones ? 1 : 0 }}>
 					<motion.button
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}
-						onClick={() => setIsEditing(true)}
+						onClick={() => setEstaEditando(true)}
 						className='w-8 h-8 rounded-full text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors'
 						aria-label='Editar tarea'>
 						<i className='fa-solid fa-pen-to-square'></i>
@@ -227,7 +232,7 @@ const TaskItem = ({ task }) => {
 					<motion.button
 						whileHover={{ scale: 1.1, color: '#ef4444' }}
 						whileTap={{ scale: 0.9 }}
-						onClick={() => dispatch(removeTask(task.id))}
+						onClick={() => dispatch(eliminarTarea(tarea.id))}
 						className='w-8 h-8 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors'
 						aria-label='Eliminar tarea'>
 						<i className='fa-solid fa-trash-can'></i>
@@ -238,4 +243,4 @@ const TaskItem = ({ task }) => {
 	);
 };
 
-export default TaskItem;
+export default ElementoTarea;

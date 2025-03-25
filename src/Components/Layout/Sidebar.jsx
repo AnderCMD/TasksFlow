@@ -1,40 +1,40 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { selectAllTasks } from '@/Features/Tasks/tasksSlice';
+import { seleccionarTodasLasTareas } from '@/Features/Tasks/tareasSlice';
 
-const Sidebar = () => {
-	const tasks = useSelector(selectAllTasks) || [];
-	const [isOpen, setIsOpen] = useState(false);
+const BarraLateral = () => {
+	const tareas = useSelector(seleccionarTodasLasTareas) || [];
+	const [estaAbierto, setEstaAbierto] = useState(false);
 
 	// Filtrar tareas válidas para evitar errores con elementos nulos
-	const validTasks = tasks.filter((task) => task !== null && task !== undefined);
+	const tareasValidas = tareas.filter((tarea) => tarea !== null && tarea !== undefined);
 
 	// Calcular estadísticas
-	const totalTasks = validTasks.length;
-	const completedTasks = validTasks.filter((task) => task.completed).length;
-	const pendingTasks = totalTasks - completedTasks;
-	const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+	const totalTareas = tareasValidas.length;
+	const tareasCompletadas = tareasValidas.filter((tarea) => tarea.completada).length;
+	const tareasPendientes = totalTareas - tareasCompletadas;
+	const tasaCompletado = totalTareas > 0 ? Math.round((tareasCompletadas / totalTareas) * 100) : 0;
 
 	// Opciones de navegación con iconos modernos de FontAwesome 6
-	const navOptions = [
-		{ icon: 'fa-house', label: 'Inicio', active: true, URL: '/', soon: false },
-		{ icon: 'fa-calendar-days', label: 'Calendario', active: false, URL: '#', soon: true },
-		{ icon: 'fa-chart-column', label: 'Estadísticas', active: false, URL: '#', soon: true },
-		{ icon: 'fa-sliders', label: 'Configuración', active: false, URL: '#', soon: true },
+	const opcionesNavegacion = [
+		{ icon: 'fa-house', label: 'Inicio', activo: true, URL: '/', proximamente: false },
+		{ icon: 'fa-calendar-days', label: 'Calendario', activo: false, URL: '#', proximamente: true },
+		{ icon: 'fa-chart-column', label: 'Estadísticas', activo: false, URL: '#', proximamente: true },
+		{ icon: 'fa-sliders', label: 'Configuración', activo: false, URL: '#', proximamente: true },
 	];
 
 	return (
 		<>
 			{/* Overlay para móvil */}
 			<AnimatePresence>
-				{isOpen && (
+				{estaAbierto && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 0.5 }}
 						exit={{ opacity: 0 }}
 						className='fixed inset-0 bg-black z-10 md:hidden'
-						onClick={() => setIsOpen(false)}
+						onClick={() => setEstaAbierto(false)}
 					/>
 				)}
 			</AnimatePresence>
@@ -44,15 +44,15 @@ const Sidebar = () => {
 				<motion.button
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
-					onClick={() => setIsOpen(!isOpen)}
+					onClick={() => setEstaAbierto(!estaAbierto)}
 					className='bg-gradient-to-r from-indigo-500 to-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg'>
-					<i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+					<i className={`fa-solid ${estaAbierto ? 'fa-xmark' : 'fa-bars'}`}></i>
 				</motion.button>
 			</div>
 
 			{/* Sidebar para móvil */}
 			<AnimatePresence>
-				{isOpen && (
+				{estaAbierto && (
 					<motion.div
 						initial={{ x: '-100%' }}
 						animate={{ x: 0 }}
@@ -60,16 +60,16 @@ const Sidebar = () => {
 						transition={{ type: 'spring', damping: 25, stiffness: 200 }}
 						className='fixed inset-y-0 left-0 w-fit bg-white dark:bg-gray-800 shadow-2xl z-20 md:hidden p-6 overflow-y-auto'>
 						<button
-							onClick={() => setIsOpen(false)}
+							onClick={() => setEstaAbierto(false)}
 							className='absolute top-4 left-4 w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors'>
 							<i className='fa-solid fa-xmark'></i>
 						</button>
-						<SidebarContent
-							totalTasks={totalTasks}
-							completedTasks={completedTasks}
-							pendingTasks={pendingTasks}
-							completionRate={completionRate}
-							navOptions={navOptions}
+						<ContenidoBarraLateral
+							totalTareas={totalTareas}
+							tareasCompletadas={tareasCompletadas}
+							tareasPendientes={tareasPendientes}
+							tasaCompletado={tasaCompletado}
+							opcionesNavegacion={opcionesNavegacion}
 						/>
 					</motion.div>
 				)}
@@ -77,12 +77,12 @@ const Sidebar = () => {
 
 			{/* Sidebar para escritorio */}
 			<aside className='hidden md:block w-fit bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 self-start sticky top-4 hover:shadow-lg'>
-				<SidebarContent
-					totalTasks={totalTasks}
-					completedTasks={completedTasks}
-					pendingTasks={pendingTasks}
-					completionRate={completionRate}
-					navOptions={navOptions}
+				<ContenidoBarraLateral
+					totalTareas={totalTareas}
+					tareasCompletadas={tareasCompletadas}
+					tareasPendientes={tareasPendientes}
+					tasaCompletado={tasaCompletado}
+					opcionesNavegacion={opcionesNavegacion}
 				/>
 			</aside>
 		</>
@@ -90,7 +90,13 @@ const Sidebar = () => {
 };
 
 // Componente para el contenido del sidebar
-const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRate, navOptions }) => {
+const ContenidoBarraLateral = ({
+	totalTareas,
+	tareasCompletadas,
+	tareasPendientes,
+	tasaCompletado,
+	opcionesNavegacion,
+}) => {
 	return (
 		<div className='space-y-8 w-fit'>
 			<div className='text-center border-b border-gray-200 dark:border-gray-700 pb-6'>
@@ -107,29 +113,29 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 
 			<nav className='px-2'>
 				<ul className='space-y-1'>
-					{navOptions.map((option, index) => (
+					{opcionesNavegacion.map((opcion, indice) => (
 						<motion.li
-							key={index}
+							key={indice}
 							whileHover={{ x: 4 }}
 							transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
 							<a
-								href={option.URL}
+								href={opcion.URL}
 								className={`flex items-center px-4 py-3 rounded-xl transition-all ${
-									option.active
+									opcion.activo
 										? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-md'
 										: 'text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-700'
 								}`}>
 								<i
-									className={`fa-solid ${option.icon} text-lg ${
-										option.active ? '' : 'text-indigo-500 dark:text-indigo-400'
+									className={`fa-solid ${opcion.icon} text-lg ${
+										opcion.activo ? 'text-white' : 'text-indigo-500 dark:text-indigo-400'
 									}`}></i>
-								<span className='ml-4'>{option.label}</span>
-								{option.soon && (
+								<span className='ml-4'>{opcion.label}</span>
+								{opcion.proximamente && (
 									<span className='ml-auto inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold rounded-full bg-gray-100 dark:bg-gray-700/20 text-gray-400 dark:text-gray-500'>
 										Próximamente
 									</span>
 								)}
-								{option.active && (
+								{opcion.active && (
 									<div className='ml-auto'>
 										<i className='fa-solid fa-chevron-right text-xs opacity-70'></i>
 									</div>
@@ -153,16 +159,16 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 							<motion.span
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
-								key={completionRate}
+								key={tasaCompletado}
 								className='font-bold text-indigo-600 dark:text-indigo-400'>
-								{completionRate}%
+								{tasaCompletado}%
 							</motion.span>
 						</div>
 						<div className='w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5'>
 							<motion.div
 								className='bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full'
 								initial={{ width: 0 }}
-								animate={{ width: `${completionRate}%` }}
+								animate={{ width: `${tasaCompletado}%` }}
 								transition={{ duration: 0.8, ease: 'easeOut' }}></motion.div>
 						</div>
 					</div>
@@ -179,7 +185,7 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 								</div>
 							</div>
 							<p className='text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-2'>
-								{completedTasks}
+								{tareasCompletadas}
 							</p>
 						</motion.div>
 						<motion.div
@@ -192,7 +198,9 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 									<i className='fa-solid fa-clock text-xs text-amber-500 dark:text-amber-400'></i>
 								</div>
 							</div>
-							<p className='text-2xl font-bold text-amber-600 dark:text-amber-400 mt-2'>{pendingTasks}</p>
+							<p className='text-2xl font-bold text-amber-600 dark:text-amber-400 mt-2'>
+								{tareasPendientes}
+							</p>
 						</motion.div>
 					</div>
 
@@ -206,7 +214,7 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 								<i className='fa-solid fa-list-check text-xs text-blue-500 dark:text-blue-400'></i>
 							</div>
 						</div>
-						<p className='text-2xl font-bold text-gray-800 dark:text-white mt-2'>{totalTasks}</p>
+						<p className='text-2xl font-bold text-gray-800 dark:text-white mt-2'>{totalTareas}</p>
 					</motion.div>
 				</div>
 			</div>
@@ -214,4 +222,4 @@ const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRa
 	);
 };
 
-export default Sidebar;
+export default BarraLateral;

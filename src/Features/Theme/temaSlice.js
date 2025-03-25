@@ -2,51 +2,51 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // Función para cargar la preferencia de tema del localStorage
-const loadThemeFromStorage = () => {
+const cargarTemaDelAlmacenamiento = () => {
 	try {
-		const storedTheme = localStorage.getItem('theme');
-		if (storedTheme) {
-			return storedTheme;
+		const temaAlmacenado = localStorage.getItem('tema');
+		if (temaAlmacenado) {
+			return temaAlmacenado;
 		}
 
 		// Si no hay tema guardado, detectar preferencia del sistema
 		if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			return 'dark';
+			return 'oscuro';
 		}
 
-		return 'light';
+		return 'claro';
 	} catch (error) {
 		console.error('Error al cargar tema del localStorage:', error);
-		return 'light';
+		return 'claro';
 	}
 };
 
 // Estado inicial
-const initialState = {
-	mode: loadThemeFromStorage(),
+const estadoInicial = {
+	modo: cargarTemaDelAlmacenamiento(),
 };
 
-export const themeSlice = createSlice({
-	name: 'theme',
-	initialState,
+export const temaSlice = createSlice({
+	name: 'tema',
+	initialState: estadoInicial,
 	reducers: {
-		toggleTheme: (state) => {
-			state.mode = state.mode === 'dark' ? 'light' : 'dark';
-			localStorage.setItem('theme', state.mode);
+		alternarTema: (state) => {
+			state.modo = state.modo === 'oscuro' ? 'claro' : 'oscuro';
+			localStorage.setItem('tema', state.modo);
 
 			// Aplicar clase al elemento HTML para el tema oscuro
-			if (state.mode === 'dark') {
+			if (state.modo === 'oscuro') {
 				document.documentElement.classList.add('dark');
 			} else {
 				document.documentElement.classList.remove('dark');
 			}
 		},
-		setTheme: (state, action) => {
-			state.mode = action.payload;
-			localStorage.setItem('theme', state.mode);
+		establecerTema: (state, action) => {
+			state.modo = action.payload;
+			localStorage.setItem('tema', state.modo);
 
 			// Aplicar clase al elemento HTML para el tema oscuro
-			if (state.mode === 'dark') {
+			if (state.modo === 'oscuro') {
 				document.documentElement.classList.add('dark');
 			} else {
 				document.documentElement.classList.remove('dark');
@@ -56,9 +56,9 @@ export const themeSlice = createSlice({
 });
 
 // Acciones
-export const { toggleTheme, setTheme } = themeSlice.actions;
+export const { alternarTema, establecerTema } = temaSlice.actions;
 
 // Selectores
-export const selectTheme = (state) => state.theme.mode;
+export const seleccionarTema = (state) => state.tema.modo;
 
-export default themeSlice.reducer;
+export default temaSlice.reducer;
