@@ -1,6 +1,7 @@
 // ? Importaciones
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 // ? Features
 import { seleccionarTareasFiltradas, seleccionarFiltroActivo } from '@/Features/Tasks/tareasSlice';
@@ -14,6 +15,18 @@ const ListaTareas = () => {
 
 	// Filtrar tareas inválidas (nulas o indefinidas)
 	const tareasValidas = tareas.filter((tarea) => tarea !== null && tarea !== undefined);
+
+	// Dividir tareas en páginas
+	const tareasPorPagina = 5;
+	const [paginaActual, setPaginaActual] = useState(1);
+	const paginas = Math.ceil(tareasValidas.length / tareasPorPagina);
+	const tareasPagina = tareasValidas.slice((paginaActual - 1) * tareasPorPagina, paginaActual * tareasPorPagina);
+
+	const cambiarPagina = (pagina) => {
+		if (pagina >= 1 && pagina <= paginas) {
+			setPaginaActual(pagina);
+		}
+	};
 
 	// Mensajes personalizados según el filtro activo
 	const obtenerMensajeVacio = () => {
@@ -77,7 +90,7 @@ const ListaTareas = () => {
 	return (
 		<div className='space-y-4'>
 			<AnimatePresence mode='popLayout'>
-				{tareasValidas.map((tarea) => (
+				{tareasPagina.map((tarea) => (
 					<motion.div
 						key={tarea.id}
 						initial={{ opacity: 0, y: 20 }}
@@ -94,6 +107,42 @@ const ListaTareas = () => {
 					</motion.div>
 				))}
 			</AnimatePresence>
+
+			{/* Paginación */}
+			<div className='flex justify-center items-center gap-2 mt-4'>
+				<button
+					onClick={() => cambiarPagina(paginaActual - 1)}
+					disabled={paginaActual === 1}
+					className={`px-4 py-2 rounded-lg ${
+						paginaActual === 1
+							? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+							: 'bg-indigo-500 text-white hover:bg-indigo-600'
+					}`}>
+					<i className='fa-solid fa-chevron-left'></i>
+				</button>
+				{Array.from({ length: paginas }, (_, index) => (
+					<button
+						key={index + 1}
+						onClick={() => cambiarPagina(index + 1)}
+						className={`px-4 py-2 rounded-lg ${
+							paginaActual === index + 1
+								? 'bg-indigo-500 text-white'
+								: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-indigo-100 dark:hover:bg-gray-600'
+						}`}>
+						{index + 1}
+					</button>
+				))}
+				<button
+					onClick={() => cambiarPagina(paginaActual + 1)}
+					disabled={paginaActual === paginas}
+					className={`px-4 py-2 rounded-lg ${
+						paginaActual === paginas
+							? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+							: 'bg-indigo-500 text-white hover:bg-indigo-600'
+					}`}>
+					<i className='fa-solid fa-chevron-right'></i>
+				</button>
+			</div>
 		</div>
 	);
 };
