@@ -34,7 +34,7 @@
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
-    "@eslint/js": "9.21.0",
+    "@eslint/js": "9.39.5",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.2.0",
     "@types/react": "19.0.10",
