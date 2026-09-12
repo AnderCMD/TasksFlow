@@ -1,16 +1,15 @@
-// ? Importaciones
 import { useDispatch, useSelector } from 'react-redux';
-import { alternarTema, seleccionarTema } from '@/Features/Theme/temaSlice';
+import { toggleTheme, selectTheme } from '@/Features/Theme/themeSlice';
 
-// ? Estilos
+// Styles
 import '@/Styles/DarkMode.css';
 
-export default function ModoOscuro() {
+export default function DarkMode() {
 	const dispatch = useDispatch();
-	const tema = useSelector(seleccionarTema);
+	const theme = useSelector(selectTheme);
 
-	const manejarCambioTema = () => {
-		dispatch(alternarTema());
+	const handleThemeChange = () => {
+		dispatch(toggleTheme());
 	};
 
 	return (
@@ -20,8 +19,8 @@ export default function ModoOscuro() {
 					type='checkbox'
 					className='theme-switch__checkbox'
 					id='ToggleDarkMode'
-					checked={tema === 'oscuro'}
-					onChange={manejarCambioTema}
+					checked={theme === 'dark'}
+					onChange={handleThemeChange}
 				/>
 				<div className='theme-switch__container'>
 					<div className='theme-switch__clouds'></div>

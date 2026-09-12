@@ -1,8 +1,6 @@
-// ? Importaciones
 import { motion } from 'framer-motion';
 import packageJson from '../../../package.json';
 
-// ? Componentes
 import DarkMode from '../UI/DarkMode';
 
 export default function Header() {
@@ -38,5 +36,4 @@ export default function Header() {
 			</nav>
 		</header>
 	);
-};
-
+}

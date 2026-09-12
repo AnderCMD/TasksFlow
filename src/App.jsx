@@ -1,34 +1,30 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Routes, Route } from 'react-router-dom';
 
-// Componentes
-import TaskList from '@/Components/Tasks/TasksList';
-import TaskForm from '@/Components/Tasks/TaskForm';
 import Header from '@/Components/Layout/Header';
 import Sidebar from '@/Components/Layout/Sidebar';
-import TaskFilter from '@/Components/Tasks/TaskFilter';
 
-// Features
-import { seleccionarTema } from '@/Features/Theme/temaSlice';
-import { limpiarTareas } from '@/Features/Tasks/tareasSlice';
+import Home from '@/Pages/Home';
+import Calendar from '@/Pages/Calendar';
+import Statistics from '@/Pages/Statistics';
+import Settings from '@/Pages/Settings';
+
+import { selectTheme } from '@/Features/Theme/themeSlice';
+import { cleanupTasks } from '@/Features/Tasks/tasksSlice';
 
 export default function App() {
-	const tema = useSelector(seleccionarTema);
+	const theme = useSelector(selectTheme);
 	const dispatch = useDispatch();
 
-	// Aplicar tema al cargar la app
+	// Apply the theme class to <html> on load and whenever it changes.
 	useEffect(() => {
-		if (tema === 'oscuro') {
-			document.documentElement.classList.add('dark');
-		} else {
-			document.documentElement.classList.remove('dark');
-		}
-	}, [tema]);
+		document.documentElement.classList.toggle('dark', theme === 'dark');
+	}, [theme]);
 
-	// Limpiar tareas inválidas al iniciar la aplicación
+	// Drop any malformed tasks that may have slipped into storage on startup.
 	useEffect(() => {
-		dispatch(limpiarTareas());
+		dispatch(cleanupTasks());
 	}, [dispatch]);
 
 	return (
@@ -37,51 +33,12 @@ export default function App() {
 			<div className='container mx-auto px-4 py-8 flex flex-col md:flex-row gap-6 max-w-7xl'>
 				<Sidebar />
 				<main className='flex-1 min-w-0'>
-					{' '}
-					<div>
-						<motion.h1
-							initial={{ y: -20, opacity: 0 }}
-							animate={{ y: 0, opacity: 1 }}
-							transition={{ duration: 0.5 }}
-							className='text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-4'>
-							¡Bienvenido a TasksFLow!
-						</motion.h1>
-					</div>
-					<div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 mb-6 transition-colors duration-300'>
-						<div className='flex flex-col'>
-							<div className='flex items-center justify-between mb-4'>
-								<h1 className='text-lg sm:text-xl font-semibold text-gray-800 dark:text-white'>
-									Añadir Nueva Tarea
-								</h1>
-							</div>
-							<TaskForm />
-						</div>
-					</div>
-					<div className='bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 transition-colors duration-300'>
-						<div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6'>
-							<h2 className='text-lg sm:text-xl font-semibold text-gray-800 dark:text-white'>
-								Mis Tareas
-							</h2>
-						</div>
-						<AnimatePresence>
-							<motion.div
-								initial={{ opacity: 0, y: 15 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0 }}
-								transition={{ duration: 0.3 }}>
-								<TaskFilter />
-							</motion.div>
-						</AnimatePresence>
-						<AnimatePresence>
-							<motion.div
-								initial={{ opacity: 0, y: 15 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0 }}
-								transition={{ duration: 0.3 }}>
-								<TaskList />
-							</motion.div>
-						</AnimatePresence>
-					</div>
+					<Routes>
+						<Route path='/' element={<Home />} />
+						<Route path='/calendar' element={<Calendar />} />
+						<Route path='/statistics' element={<Statistics />} />
+						<Route path='/settings' element={<Settings />} />
+					</Routes>
 				</main>
 			</div>
 		</div>

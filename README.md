@@ -8,10 +8,13 @@ TasksFlow es una aplicación moderna de gestión de tareas construida con React,
 
 - ✅ Crear, editar y eliminar tareas
 - 📋 Marcar tareas como completadas
-- 🔍 Filtrar tareas por estado (todas, activas, completadas)
+- 🔍 Filtrar y buscar tareas por estado y prioridad
+- 📅 Vista de calendario para visualizar tareas por fecha límite
+- 📊 Panel de estadísticas con tasa de finalización y distribución por prioridad
+- ⚙️ Configuración: cambio de tema, exportación/importación de datos y borrado de datos
 - 🌓 Modo oscuro/claro
 - 📱 Diseño responsive para dispositivos móviles y de escritorio
-- 💾 Almacenamiento local (localStorage) para persistencia de datos
+- 💾 Almacenamiento local (localStorage) para persistencia de datos, con manejo robusto de errores
 - ✨ Animaciones fluidas con Framer Motion
 - 🎨 Interfaz de usuario moderna con TailwindCSS y MUI
 
@@ -48,6 +51,17 @@ pnpm run dev
 
 4. Abrir [http://localhost:5173](http://localhost:5173) en el navegador.
 
+## ✅ Scripts disponibles
+
+```bash
+pnpm run dev        # Servidor de desarrollo
+pnpm run build      # Build de producción
+pnpm run preview    # Previsualizar el build de producción
+pnpm run lint       # Analizar el código con ESLint
+pnpm run test       # Ejecutar la suite de pruebas (Vitest)
+pnpm run test:watch # Ejecutar pruebas en modo watch
+```
+
 ## 🏗️ Estructura del proyecto
 
 ```
@@ -59,12 +73,15 @@ tasksflow/
 │   ├── Assets/             # Recursos (imágenes, iconos, etc.)
 │   ├── Components/         # Componentes reutilizables
 │   │   ├── Layout/         # Componentes de estructura
-│   │   └── Tasks/          # Componentes específicos de tareas
+│   │   ├── Tasks/          # Componentes específicos de tareas
+│   │   └── UI/             # Componentes de interfaz genéricos (tema, error boundary)
 │   ├── Features/           # Características con sus slices de Redux
 │   │   ├── Tasks/          # Gestión de tareas
 │   │   └── Theme/          # Gestión del tema
+│   ├── Pages/              # Páginas enrutadas (Inicio, Calendario, Estadísticas, Configuración)
+│   ├── Utils/              # Utilidades compartidas (p. ej. acceso seguro a localStorage)
 │   ├── Styles/             # Estilos globales
-│   ├── App.jsx             # Componente principal
+│   ├── App.jsx             # Componente principal y definición de rutas
 │   ├── index.css           # Estilos globales
 │   └── main.jsx            # Punto de entrada
 ├── index.html              # Plantilla HTML
@@ -94,8 +111,10 @@ Se utiliza Framer Motion para añadir animaciones fluidas que mejoran la experie
 ## 🧪 Tecnologías utilizadas
 
 - [React](https://reactjs.org/) - Biblioteca para construir interfaces de usuario
+- [React Router](https://reactrouter.com/) - Enrutamiento del lado del cliente
 - [Redux Toolkit](https://redux-toolkit.js.org/) - Herramientas para simplificar la lógica de Redux
 - [Vite](https://vitejs.dev/) - Entorno de desarrollo rápido
+- [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) - Pruebas unitarias
 - [TailwindCSS](https://tailwindcss.com/) - Framework CSS utilitario
 - [MUI (Material-UI)](https://mui.com/) - Componentes de React basados en Material Design
 - [Framer Motion](https://www.framer.com/motion/) - Biblioteca de animaciones para React
@@ -105,10 +124,30 @@ Se utiliza Framer Motion para añadir animaciones fluidas que mejoran la experie
 - Integración con backend para sincronización de datos entre dispositivos
 - Sistema de autenticación de usuarios
 - Categorías y etiquetas para organizar tareas
-- Vista de calendario para programar tareas
 - Notificaciones y recordatorios
 - Funcionalidad de arrastrar y soltar (drag and drop)
-- Exportación e importación de datos
+- Soporte multi-idioma (i18n)
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas. Lee la [guía de contribución](CONTRIBUTING.md)
+para más detalles sobre cómo configurar el entorno y enviar cambios. Este
+proyecto sigue un [Código de conducta](CODE_OF_CONDUCT.md).
+
+## 🔒 Seguridad
+
+Si encuentras una vulnerabilidad de seguridad, por favor consulta la
+[política de seguridad](SECURITY.md) para reportarla de forma responsable.
+
+## 🔤 Nota sobre tipografía
+
+La interfaz usa las fuentes San Francisco Pro Rounded de Apple (incluidas en
+`src/Assets/Fonts/`), obtenidas de
+[developer.apple.com/fonts](https://developer.apple.com/fonts/). Ten en
+cuenta que la licencia de estas fuentes restringe su uso a software
+relacionado con las plataformas de Apple; si vas a reutilizar este proyecto
+fuera de ese contexto, sustitúyelas por una fuente de licencia abierta (por
+ejemplo, [Inter](https://rsms.me/inter/)).
 
 ## 📄 Licencia
 

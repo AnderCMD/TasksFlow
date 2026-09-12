@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import tareasReducer from '@/Features/Tasks/tareasSlice';
-import temaReducer from '@/Features/Theme/temaSlice';
+import tasksReducer from '@/Features/Tasks/tasksSlice';
+import themeReducer from '@/Features/Theme/themeSlice';
 
 export const store = configureStore({
 	reducer: {
-		tareas: tareasReducer,
-		tema: temaReducer,
+		tasks: tasksReducer,
+		theme: themeReducer,
 	},
 });

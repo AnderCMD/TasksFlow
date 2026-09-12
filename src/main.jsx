@@ -1,24 +1,24 @@
-// ? Importaciones
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
-// ? Store
 import { store } from '@/App/store';
 
-// ? Estilos
 import '@/index.css';
-
-// ? Iconos FontAwesome v6
 import '@/Assets/FontAwesome/css/all.min.css';
 
-// ? Componentes
 import App from '@/App.jsx';
+import ErrorBoundary from '@/Components/UI/ErrorBoundary';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
-		<Provider store={store}>
-			<App />
-		</Provider>
+		<ErrorBoundary>
+			<Provider store={store}>
+				<BrowserRouter>
+					<App />
+				</BrowserRouter>
+			</Provider>
+		</ErrorBoundary>
 	</React.StrictMode>
 );

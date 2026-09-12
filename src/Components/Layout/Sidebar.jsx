@@ -1,58 +1,57 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { seleccionarTodasLasTareas } from '@/Features/Tasks/tareasSlice';
+import PropTypes from 'prop-types';
+import { selectAllTasks } from '@/Features/Tasks/tasksSlice';
 
-const BarraLateral = () => {
-	const tareas = useSelector(seleccionarTodasLasTareas) || [];
-	const [estaAbierto, setEstaAbierto] = useState(false);
+const NAV_OPTIONS = [
+	{ icon: 'fa-house', label: 'Inicio', to: '/' },
+	{ icon: 'fa-calendar-days', label: 'Calendario', to: '/calendar' },
+	{ icon: 'fa-chart-column', label: 'Estadísticas', to: '/statistics' },
+	{ icon: 'fa-sliders', label: 'Configuración', to: '/settings' },
+];
 
-	// Filtrar tareas válidas para evitar errores con elementos nulos
-	const tareasValidas = tareas.filter((tarea) => tarea !== null && tarea !== undefined);
+const Sidebar = () => {
+	const tasks = useSelector(selectAllTasks) || [];
+	const [isOpen, setIsOpen] = useState(false);
 
-	// Calcular estadísticas
-	const totalTareas = tareasValidas.length;
-	const tareasCompletadas = tareasValidas.filter((tarea) => tarea.completada).length;
-	const tareasPendientes = totalTareas - tareasCompletadas;
-	const tasaCompletado = totalTareas > 0 ? Math.round((tareasCompletadas / totalTareas) * 100) : 0;
+	const validTasks = tasks.filter((task) => task !== null && task !== undefined);
 
-	// Opciones de navegación con iconos modernos de FontAwesome 6
-	const opcionesNavegacion = [
-		{ icon: 'fa-house', label: 'Inicio', activo: true, URL: '/', proximamente: false },
-		{ icon: 'fa-calendar-days', label: 'Calendario', activo: false, URL: '#', proximamente: true },
-		{ icon: 'fa-chart-column', label: 'Estadísticas', activo: false, URL: '#', proximamente: true },
-		{ icon: 'fa-sliders', label: 'Configuración', activo: false, URL: '#', proximamente: true },
-	];
+	const totalTasks = validTasks.length;
+	const completedTasks = validTasks.filter((task) => task.completed).length;
+	const pendingTasks = totalTasks - completedTasks;
+	const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
 	return (
 		<>
-			{/* Overlay para móvil */}
+			{/* Mobile overlay */}
 			<AnimatePresence>
-				{estaAbierto && (
+				{isOpen && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 0.5 }}
 						exit={{ opacity: 0 }}
 						className='fixed inset-0 bg-black z-10 md:hidden'
-						onClick={() => setEstaAbierto(false)}
+						onClick={() => setIsOpen(false)}
 					/>
 				)}
 			</AnimatePresence>
 
-			{/* Botón de menú para móvil */}
+			{/* Mobile menu button */}
 			<div className='md:hidden fixed bottom-4 right-4 z-20'>
 				<motion.button
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
-					onClick={() => setEstaAbierto(!estaAbierto)}
+					onClick={() => setIsOpen(!isOpen)}
 					className='bg-gradient-to-r from-indigo-500 to-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg'>
-					<i className={`fa-solid ${estaAbierto ? 'fa-xmark' : 'fa-bars'}`}></i>
+					<i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
 				</motion.button>
 			</div>
 
-			{/* Sidebar para móvil */}
+			{/* Mobile sidebar */}
 			<AnimatePresence>
-				{estaAbierto && (
+				{isOpen && (
 					<motion.div
 						initial={{ x: '-100%' }}
 						animate={{ x: 0 }}
@@ -60,43 +59,35 @@ const BarraLateral = () => {
 						transition={{ type: 'spring', damping: 25, stiffness: 200 }}
 						className='fixed inset-y-0 left-0 w-fit bg-white dark:bg-gray-800 shadow-2xl z-20 md:hidden p-6 overflow-y-auto'>
 						<button
-							onClick={() => setEstaAbierto(false)}
+							onClick={() => setIsOpen(false)}
 							className='absolute top-4 left-4 w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors'>
 							<i className='fa-solid fa-xmark'></i>
 						</button>
-						<ContenidoBarraLateral
-							totalTareas={totalTareas}
-							tareasCompletadas={tareasCompletadas}
-							tareasPendientes={tareasPendientes}
-							tasaCompletado={tasaCompletado}
-							opcionesNavegacion={opcionesNavegacion}
+						<SidebarContent
+							totalTasks={totalTasks}
+							completedTasks={completedTasks}
+							pendingTasks={pendingTasks}
+							completionRate={completionRate}
+							onNavigate={() => setIsOpen(false)}
 						/>
 					</motion.div>
 				)}
 			</AnimatePresence>
 
-			{/* Sidebar para escritorio */}
+			{/* Desktop sidebar */}
 			<aside className='hidden md:block w-fit bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300 self-start sticky top-4 hover:shadow-lg'>
-				<ContenidoBarraLateral
-					totalTareas={totalTareas}
-					tareasCompletadas={tareasCompletadas}
-					tareasPendientes={tareasPendientes}
-					tasaCompletado={tasaCompletado}
-					opcionesNavegacion={opcionesNavegacion}
+				<SidebarContent
+					totalTasks={totalTasks}
+					completedTasks={completedTasks}
+					pendingTasks={pendingTasks}
+					completionRate={completionRate}
 				/>
 			</aside>
 		</>
 	);
 };
 
-// Componente para el contenido del sidebar
-const ContenidoBarraLateral = ({
-	totalTareas,
-	tareasCompletadas,
-	tareasPendientes,
-	tasaCompletado,
-	opcionesNavegacion,
-}) => {
+const SidebarContent = ({ totalTasks, completedTasks, pendingTasks, completionRate, onNavigate }) => {
 	return (
 		<div className='space-y-8 w-fit'>
 			<div className='text-center border-b border-gray-200 dark:border-gray-700 pb-6'>
@@ -113,34 +104,37 @@ const ContenidoBarraLateral = ({
 
 			<nav className='px-2'>
 				<ul className='space-y-1'>
-					{opcionesNavegacion.map((opcion, indice) => (
+					{NAV_OPTIONS.map((option) => (
 						<motion.li
-							key={indice}
+							key={option.to}
 							whileHover={{ x: 4 }}
 							transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
-							<a
-								href={opcion.URL}
-								className={`flex items-center px-4 py-3 rounded-xl transition-all ${
-									opcion.activo
-										? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-md'
-										: 'text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-700'
-								}`}>
-								<i
-									className={`fa-solid ${opcion.icon} text-lg ${
-										opcion.activo ? 'text-white' : 'text-indigo-500 dark:text-indigo-400'
-									}`}></i>
-								<span className='ml-4'>{opcion.label}</span>
-								{opcion.proximamente && (
-									<span className='ml-auto inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold rounded-full bg-gray-100 dark:bg-gray-700/20 text-gray-400 dark:text-gray-500'>
-										Próximamente
-									</span>
+							<NavLink
+								to={option.to}
+								end
+								onClick={onNavigate}
+								className={({ isActive }) =>
+									`flex items-center px-4 py-3 rounded-xl transition-all ${
+										isActive
+											? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-md'
+											: 'text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-700'
+									}`
+								}>
+								{({ isActive }) => (
+									<>
+										<i
+											className={`fa-solid ${option.icon} text-lg ${
+												isActive ? 'text-white' : 'text-indigo-500 dark:text-indigo-400'
+											}`}></i>
+										<span className='ml-4'>{option.label}</span>
+										{isActive && (
+											<div className='ml-auto'>
+												<i className='fa-solid fa-chevron-right text-xs opacity-70'></i>
+											</div>
+										)}
+									</>
 								)}
-								{opcion.active && (
-									<div className='ml-auto'>
-										<i className='fa-solid fa-chevron-right text-xs opacity-70'></i>
-									</div>
-								)}
-							</a>
+							</NavLink>
 						</motion.li>
 					))}
 				</ul>
@@ -159,16 +153,16 @@ const ContenidoBarraLateral = ({
 							<motion.span
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
-								key={tasaCompletado}
+								key={completionRate}
 								className='font-bold text-indigo-600 dark:text-indigo-400'>
-								{tasaCompletado}%
+								{completionRate}%
 							</motion.span>
 						</div>
 						<div className='w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5'>
 							<motion.div
 								className='bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full'
 								initial={{ width: 0 }}
-								animate={{ width: `${tasaCompletado}%` }}
+								animate={{ width: `${completionRate}%` }}
 								transition={{ duration: 0.8, ease: 'easeOut' }}></motion.div>
 						</div>
 					</div>
@@ -185,7 +179,7 @@ const ContenidoBarraLateral = ({
 								</div>
 							</div>
 							<p className='text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-2'>
-								{tareasCompletadas}
+								{completedTasks}
 							</p>
 						</motion.div>
 						<motion.div
@@ -199,7 +193,7 @@ const ContenidoBarraLateral = ({
 								</div>
 							</div>
 							<p className='text-2xl font-bold text-amber-600 dark:text-amber-400 mt-2'>
-								{tareasPendientes}
+								{pendingTasks}
 							</p>
 						</motion.div>
 					</div>
@@ -214,7 +208,7 @@ const ContenidoBarraLateral = ({
 								<i className='fa-solid fa-list-check text-xs text-blue-500 dark:text-blue-400'></i>
 							</div>
 						</div>
-						<p className='text-2xl font-bold text-gray-800 dark:text-white mt-2'>{totalTareas}</p>
+						<p className='text-2xl font-bold text-gray-800 dark:text-white mt-2'>{totalTasks}</p>
 					</motion.div>
 				</div>
 			</div>
@@ -222,4 +216,12 @@ const ContenidoBarraLateral = ({
 	);
 };
 
-export default BarraLateral;
+SidebarContent.propTypes = {
+	totalTasks: PropTypes.number.isRequired,
+	completedTasks: PropTypes.number.isRequired,
+	pendingTasks: PropTypes.number.isRequired,
+	completionRate: PropTypes.number.isRequired,
+	onNavigate: PropTypes.func,
+};
+
+export default Sidebar;
