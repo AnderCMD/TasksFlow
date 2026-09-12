@@ -2,73 +2,28 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* SF Pro Rounded Font */
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Regular.otf') format('opentype');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Bold.otf') format('opentype');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Medium.otf') format('opentype');
-	font-weight: 500;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Light.otf') format('opentype');
-	font-weight: 300;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Semibold.otf') format('opentype');
-	font-weight: 600;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Black.otf') format('opentype');
-	font-weight: 900;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Heavy.otf') format('opentype');
-	font-weight: 800;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Thin.otf') format('opentype');
-	font-weight: 100;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'SF Pro Rounded';
-	src: url('@/Assets/Fonts/SF-Pro-Rounded-Ultralight.otf') format('opentype');
-	font-weight: 200;
-	font-style: normal;
-	font-display: swap;
-}
+/*
+ * Rounded UI font (Latin + Latin Extended subsets only, to keep the bundle small).
+ * Self-hosted via @fontsource so the app has no third-party licensing
+ * restrictions and works fully offline.
+ */
+@import '@fontsource/m-plus-rounded-1c/latin-100.css';
+@import '@fontsource/m-plus-rounded-1c/latin-300.css';
+@import '@fontsource/m-plus-rounded-1c/latin-400.css';
+@import '@fontsource/m-plus-rounded-1c/latin-500.css';
+@import '@fontsource/m-plus-rounded-1c/latin-700.css';
+@import '@fontsource/m-plus-rounded-1c/latin-800.css';
+@import '@fontsource/m-plus-rounded-1c/latin-900.css';
+@import '@fontsource/m-plus-rounded-1c/latin-ext-100.css';
+@import '@fontsource/m-plus-rounded-1c/latin-ext-300.css';
+@import '@fontsource/m-plus-rounded-1c/latin-ext-400.css';
+@import '@fontsource/m-plus-rounded-1c/latin-ext-500.css';
+@import '@fontsource/m-plus-rounded-1c/latin-ext-700.css';
+@import '@fontsource/m-plus-rounded-1c/latin-ext-800.css';
+@import '@fontsource/m-plus-rounded-1c/latin-ext-900.css';
 
 * {
-	font-family: 'SF Pro Rounded', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+	font-family: 'M PLUS Rounded 1c', ui-rounded, system-ui, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }

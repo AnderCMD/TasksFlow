@@ -139,15 +139,12 @@ proyecto sigue un [Código de conducta](CODE_OF_CONDUCT.md).
 Si encuentras una vulnerabilidad de seguridad, por favor consulta la
 [política de seguridad](SECURITY.md) para reportarla de forma responsable.
 
-## 🔤 Nota sobre tipografía
+## 🔤 Tipografía
 
-La interfaz usa las fuentes San Francisco Pro Rounded de Apple (incluidas en
-`src/Assets/Fonts/`), obtenidas de
-[developer.apple.com/fonts](https://developer.apple.com/fonts/). Ten en
-cuenta que la licencia de estas fuentes restringe su uso a software
-relacionado con las plataformas de Apple; si vas a reutilizar este proyecto
-fuera de ese contexto, sustitúyelas por una fuente de licencia abierta (por
-ejemplo, [Inter](https://rsms.me/inter/)).
+La interfaz usa [M PLUS Rounded 1c](https://fonts.google.com/specimen/M+PLUS+Rounded+1c),
+una tipografía redondeada de licencia abierta (OFL-1.1), autoalojada mediante
+[Fontsource](https://fontsource.org/) para que la app funcione sin
+dependencias externas ni restricciones de licencia.
 
 ## 📄 Licencia
 
