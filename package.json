@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "Tasks Flow es un proyecto de gestión de tareas que permite a los usuarios crear, organizar y realizar un seguimiento de sus tareas de manera eficiente. Con una interfaz intuitiva y fácil de usar, Tasks Flow ayuda a los usuarios a maximizar su productividad y mantenerse organizados en su vida diaria.",
   "author": {
     "name": "AnderCMD",
