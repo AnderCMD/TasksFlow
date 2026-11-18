@@ -148,7 +148,7 @@ dependencias externas ni restricciones de licencia.
 
 ## 📄 Licencia
 
-Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la licencia Apache 2.0. Ver el archivo `LICENSE` para más detalles.
 
 ## 👨‍💻 Autor
 
